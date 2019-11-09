@@ -1,6 +1,5 @@
 module series1::metrics::unit_complexity
 
-import IO;
 import utils;
 import List;
 import Tuple;
@@ -14,8 +13,7 @@ import lang::java::m3::AST;
 public list[int] getUnitCCs(list[Declaration] declarations) {
 	list[Statement] methods = findMethods(declarations);
 	
-	// We need to add one line for the method declaration
-	return [getCCStatement(method) + 1 | method <- methods];
+	return [getCCStatement(method) | method <- methods];
 }
 
 // Function to filter a list of declarations on unit size and then filtering it against a specific amount of llocs
