@@ -49,8 +49,8 @@ public tuple[int, int, int, int] getCCSigMetric(list[Declaration] declarations) 
 
 /**
 * Lines of code (LOC)
-* Function that evaluates the given unit size sig metric percentages and returns a corresponding score back
-* The risks profiles we use are:
+* Function that evaluates the given unit size sig metric percentages and returns a corresponding score back.
+* The risks profiles we use and are defined by the SIG are:
 * 
 * ++ 
 * moderate risk: 25% <= of LLOC
@@ -89,9 +89,4 @@ public int evaluateUnitComplexitySigMetric(tuple[int amountSimpleRisk, int amoun
 	} else {
 		return 1;
 	}
-}
-
-public int getLLOCOfStatements(list[Declaration] declarations) {
-	list[Statement] statements = getStatements(declarations);
-	return sum([getLLOCStatement(statement) | statement <- statements]);
 }
