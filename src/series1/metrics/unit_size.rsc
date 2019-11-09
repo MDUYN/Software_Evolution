@@ -23,35 +23,49 @@ public int filterUnitDistribution(list[int] unitSizes, int llocBound) {
 	return size([unit | unit <- unitSizes, unit >= llocBound]);
 }
 
-// This function returns the amount of stars evaluated from the unit size defined by Software Improvement Group
-
-// To be eligible for certification at the level of 4 stars, for each programming 
-// language used the percentage of lines of code residing in units with more than 15 
-// lines of code should not exceed 42.0%. The percentage in units with more than 30 lines of code 
-// should not exceed 19.1%. The percentage in units with more than 60 lines should not exceed 5.6%.
-// Ref: https://www.softwareimprovementgroup.com/wp-content/uploads/2019/08/20180509-SIG-TUViT-Evaluation-Criteria-Trusted-Product-Maintainability-Guidance-for-producers-1.pdf 
-
-public tuple[int,int,int] getUnitSizeSigMetric(list[Declaration] declarations) {
-	list[int] unitSizes = getUnitSizes(declarations);
-	
-	//Amount of units equal or above 15 lines of code
-	int amountLlocFifteen = filterUnitDistribution(unitSizes, 15);
-	
-	//Amount of units equal or above 30 lines of code
-	int amountLlocThirty = filterUnitDistribution(unitSizes, 30);
-	
-	//Amount of units equal or above 60 lines of code
-	int amountLlocSixty = filterUnitDistribution(unitSizes, 60);
-	
-	return <percent(amountLlocFifteen, size(unitSizes)), percent(amountLlocThirty, size(unitSizes)), percent(amountLlocSixty, size(unitSizes))>;
+public int filterUnitDistribution(list[int] unitSizes, int llocLowerBound, int llocUperBound) {
+	// Filter the list against the given lower and uperbound of lloc
+	return size([unit | unit <- unitSizes, unit >= llocLowerBound, unit <= llocUperBound]);
 }
 
-// Function that evaluates the given unit size sig metric percentages and returns a corresponding score back
-public int evaluateUnitSizeSigMetric(tuple[int fifteenLlocPercentage, int thirtyLlocPercentage, int sixtyLlocPercentage] metrics) {
+// Function to get the SIG metrics of unit sizes
+public tuple[int, int, int, int] getUnitSizeSigMetric(list[Declaration] declarations) {
+	list[int] unitSizes = getUnitSizes(declarations);
 	
-	// Return 4 stars if condition is true
-	if(metrics.fifteenLlocPercentage <= 42, metrics.thirtyLlocPercentage <= 19, metrics.sixtyLlocPercentage <= 5) {
+	//Amount of units between 0 and 15 LLOC
+	int amountSimpleRisk = filterUnitDistribution(unitSizes, 0, 15);
+	
+	//Amount of units between 15 and 30 LLOC
+	int amountModerateRisk = filterUnitDistribution(unitSizes, 15, 30);
+	
+	//Amount of units between 30 and 60 LLOC
+	int amountHighRisk = filterUnitDistribution(unitSizes, 30, 60);
+	
+	//Amount of units equal or above 60 lines of code
+	int amountVeryHighRisk = filterUnitDistribution(unitSizes, 60);
+	
+	
+	return <amountSimpleRisk, amountModerateRisk, amountHighRisk, amountVeryHighRisk>;
+}
+
+// This function returns the amount of stars evaluated from the unit size defined by SIG
+// Ref: https://www.softwareimprovementgroup.com/wp-content/uploads/2019/08/20180509-SIG-TUViT-Evaluation-Criteria-Trusted-Product-Maintainability-Guidance-for-producers-1.pdf 
+// Function that evaluates the given unit size sig metric percentages and returns a corresponding score back
+public int evaluateUnitSizeSigMetric(tuple[int amountSimpleRisk, int amountModerateRisk, int amountHighRisk, int amountVeryHighRisk] metrics, amountOfUnits) {
+	
+	int moderate = percent(metrics.amountModerateRisk, amountOfUnits);
+	int high = percent(metrics.amountHighRisk, amountOfUnits);
+	int veryHigh = percent(metrics.amountVeryHighRisk, amountOfUnits); 
+	
+	if(moderate <= 15.0 && high <= 5.0 && veryHigh <= 0.0) {
+		return 5;
+	} else if(moderate <= 20.0 && high <= 15.0 && veryHigh <= 5.0) {
 		return 4;
+	} else if(moderate <= 30.0 && high <= 20.0 && veryHigh <= 5.0) {
+		return 3;
+	} else if(moderate <= 40.0 && high <= 25.0 && veryHigh <= 10.0) {
+		return 2;
+	} else {
+		return 1;
 	}
-	return 0;
 }
