@@ -14,11 +14,11 @@ public list[int] getUnitSizes(list[Declaration] declarations) {
 	list[Statement] methods = findMethods(declarations);
 	
 	// We need to add one line for the method declaration
-	return [calcLLOCMethod(method) + 1 | method <- methods];
+	return [getLLOCStatement(method) + 1 | method <- methods];
 }
 
 // Function to filter a list of declarations on unit size and then filtering it against a specific amount of llocs
-public int filterUnitDistribution(list[int] unitSizes, int lloc) {
+public int filterUnitDistribution(list[int] unitSizes, int llocBound) {
 	// Filter the list against the given bound of lloc
 	return size([unit | unit <- unitSizes, unit >= lloc]);
 }
