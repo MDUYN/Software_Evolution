@@ -24,7 +24,7 @@ set[loc] extractFileLocations(set[str] extensions, loc project) {
 }
 
 // Function to create a list of Declarations with a given java file location
-list[Declaration] getASTs(loc location){
+list[Declaration] getDeclarations(loc location){
 	M3 model = createM3FromEclipseProject(location);
 	list[Declaration] asts = [];
 	for (m <- model.containment, m[0].scheme == "java+compilationUnit"){
@@ -39,7 +39,7 @@ public str fileContent(loc file) {
 }
 
 // Function that returns all method statements from a list of Declarations
-list[Statement] findMethods(list[Declaration] declarations) {
+list[Statement] getStatements(list[Declaration] declarations) {
 	list[Statement] methods = [];
 	
 	visit(declarations) {

@@ -11,7 +11,7 @@ import lang::java::m3::AST;
 // For us the definition of a unit is just the same as SIG Maintainability Modelis, 
 // the smallest named piece of executable code.
 public list[int] getUnitSizes(list[Declaration] declarations) {
-	list[Statement] methods = findMethods(declarations);
+	list[Statement] methods = getStatements(declarations);
 	
 	// We need to add one line for the method declaration
 	return [getLLOCStatement(method) + 1 | method <- methods];
@@ -20,7 +20,7 @@ public list[int] getUnitSizes(list[Declaration] declarations) {
 // Function to filter a list of declarations on unit size and then filtering it against a specific amount of llocs
 public int filterUnitDistribution(list[int] unitSizes, int llocBound) {
 	// Filter the list against the given bound of lloc
-	return size([unit | unit <- unitSizes, unit >= lloc]);
+	return size([unit | unit <- unitSizes, unit >= llocBound]);
 }
 
 // This function returns the amount of stars evaluated from the unit size defined by Software Improvement Group
