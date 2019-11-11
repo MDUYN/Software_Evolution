@@ -19,4 +19,3 @@ void main(){
 	// Calculate the unit complexity and rate it according to the SIG metrics
 	println("Unit complexity score according to SIG = <evaluateUnitComplexitySigMetric(getCCSigMetric(declarations), sum([getLLOCStatement(statement) | statement <- statements]))> stars");
 }
-
