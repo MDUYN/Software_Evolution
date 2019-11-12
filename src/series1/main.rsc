@@ -8,10 +8,16 @@ import lang::java::m3::AST;
 
 import series1::metrics::unit_size;
 import series1::metrics::unit_complexity;
+import series1::metrics::volume;
 
 void main(){
-	list[Declaration] declarations = getDeclarations(|project://smallsql0.21_src|);
+	//loc project = |project://smallsql0.21_src|;
+	loc project = |project://hsqldb-2.3.1|;
+	list[Declaration] declarations = getDeclarations(project);
 	list[Statement] statements = getStatements(declarations);
+	
+	println("Calculating scores for <project>");
+	println("LLOC size = <evaluateJavaVolumeScore(calcLLOC(declarations))>");
 	
 	// Calculate the unit sizes and evaluate them against SIG guidelines
 	println("Unit size score according to SIG = <evaluateUnitSizeSigMetric(getUnitSizeSigMetric(declarations), size(getUnitSizes(declarations)))> stars");
