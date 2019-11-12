@@ -10,6 +10,8 @@ import lang::java::m3::AST;
 import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
 
+import parser;
+
 int calcLLOC(list[Declaration] ast){
 	int lloc = 0;
 	top-down visit(ast) {
@@ -33,6 +35,10 @@ int calcLLOC(list[Declaration] ast){
 	}
 	
 	return lloc;
+}
+
+int calcSLOC(set[loc] files) {
+	return sum([size(clean(f)) | f <- files]); 
 }
 
 str evaluateJavaVolumeScore(int volume) {
