@@ -13,6 +13,7 @@ import series1::metrics::volume;
 
 import series1::ratings::analysability;
 import series1::ratings::changeability;
+import series1::ratings::testability;
 
 void main(){
 	loc project = |project://smallsql0.21_src|;
@@ -49,10 +50,10 @@ void main(){
 	
 	// Calculate system scores
 	println("Calculating system level SIG scores");
-	println("Analysability: <displayRating(rateAnalysability(<volumeScore, duplicationScore, unitSizeScore, unitTestingScore>))>");
-	println("Changeability: <displayRating(rateAnalysability(<duplicationScore, unitComplexityScore>))>");
+	println("Analysability: <displayRating(rateAnalysAbility(<volumeScore, duplicationScore, unitSizeScore, unitTestingScore>))>");
+	println("Changeability: <displayRating(rateChangeAbility(<duplicationScore, unitComplexityScore>))>");
 	println("stability: <displayRating(unitTestingScore)>");
-	
+	println("testability: <displayRating(rateTestAbility(<unitComplexityScore, unitSizeScore, unitTestingScore>))>");	
 }
 
 // Helper function to transform score to SIG rating
