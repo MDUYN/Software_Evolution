@@ -12,6 +12,7 @@ import series1::metrics::unit_complexity;
 import series1::metrics::volume;
 
 import series1::ratings::analysability;
+import series1::ratings::changeability;
 
 void main(){
 	loc project = |project://smallsql0.21_src|;
@@ -33,8 +34,8 @@ void main(){
 	
 	// Calculate the unit complexity and rate it according to the SIG metrics
 	println("Determining unit complexity rating for project");	
-	int unitComplexity = 1;
-	println("Unit complexity score according to SIG <displayRating(unitComplexity)>");
+	int unitComplexityScore = 1;
+	println("Unit complexity score according to SIG <displayRating(unitComplexityScore)>");
 	
 	// Calculate the duplications SIG score for the system
 	println("Determining duplication rating for project");	
@@ -49,6 +50,7 @@ void main(){
 	// Calculate system scores
 	println("Calculating system level SIG scores");
 	println("Analysability: <displayRating(rateAnalysability(<volumeScore, duplicationScore, unitSizeScore, unitTestingScore>))>");
+	println("Changeability: <displayRating(rateAnalysability(<duplicationScore, unitComplexityScore>))>");
 }
 
 // Helper function to transform score to SIG rating
