@@ -1,21 +1,14 @@
 module series1::metrics::unit_size
 
 import utils;
+import parser;
 import List;
 import Tuple;
 
 import util::Math;
+import lang::java::m3::Core;
 import lang::java::m3::AST;
 
-// We determine the unit size by counting the number of lines of code within each unit.
-// For us the definition of a unit is just the same as SIG Maintainability Modelis, 
-// the smallest named piece of executable code.
-public list[int] getUnitSizes(list[Declaration] declarations) {
-	list[Statement] methods = getStatements(declarations);
-	
-	// We need to add one line for the method declaration
-	return [getLLOCStatement(method) + 1 | method <- methods];
-}
 
 // Function to filter a list of declarations on unit size and then filtering it against a specific amount of llocs
 public int filterUnitDistribution(list[int] unitSizes, int llocBound) {
@@ -29,8 +22,7 @@ public int filterUnitDistribution(list[int] unitSizes, int llocLowerBound, int l
 }
 
 // Function to get the SIG metrics of unit sizes
-public tuple[int, int, int, int] getUnitSizeSigMetric(list[Declaration] declarations) {
-	list[int] unitSizes = getUnitSizes(declarations);
+public tuple[int, int, int, int] getUnitSizeDistribution(list[int] unitSizes) {
 	
 	//Amount of units between 0 and 15 LLOC
 	int amountSimpleRisk = filterUnitDistribution(unitSizes, 0, 15);
@@ -44,13 +36,12 @@ public tuple[int, int, int, int] getUnitSizeSigMetric(list[Declaration] declarat
 	//Amount of units equal or above 60 lines of code
 	int amountVeryHighRisk = filterUnitDistribution(unitSizes, 60);
 	
-	
 	return <amountSimpleRisk, amountModerateRisk, amountHighRisk, amountVeryHighRisk>;
 }
-
-// This function returns the amount of stars evaluated from the unit size defined by SIG
-// Ref: https://www.softwareimprovementgroup.com/wp-content/uploads/2019/08/20180509-SIG-TUViT-Evaluation-Criteria-Trusted-Product-Maintainability-Guidance-for-producers-1.pdf 
-// Function that evaluates the given unit size sig metric percentages and returns a corresponding score back
+//
+//// This function returns the amount of stars evaluated from the unit size defined by SIG
+//// Ref: https://www.softwareimprovementgroup.com/wp-content/uploads/2019/08/20180509-SIG-TUViT-Evaluation-Criteria-Trusted-Product-Maintainability-Guidance-for-producers-1.pdf 
+//// Function that evaluates the given unit size sig metric percentages and returns a corresponding score back
 public int evaluateUnitSizeSigMetric(tuple[int amountSimpleRisk, int amountModerateRisk, int amountHighRisk, int amountVeryHighRisk] metrics, amountOfUnits) {
 	
 	int moderate = percent(metrics.amountModerateRisk, amountOfUnits);
@@ -69,3 +60,21 @@ public int evaluateUnitSizeSigMetric(tuple[int amountSimpleRisk, int amountModer
 		return 1;
 	}
 }
+
+// Function to get of every unit the unit size according to lines of code.
+public list[int] getLOCUnitSizes(M3 model) {	
+	
+	// Clean each unit and count the amount of lines
+	return [ size(cleanFile(location)) | location <- getMethods(model) ]; 	
+}
+
+public list[int] getLLOCUnitSizes(M3 model) {
+	list[Declaration] declarations = getDeclarations(model);
+	list[Statement] statements = getStatements(declarations);
+	
+	// We need to add one line for the method declaration
+	return [getLLOCStatement(statement) + 1 | statement <- statements];
+}
+
+
+

@@ -23,9 +23,17 @@ set[loc] extractFileLocations(set[str] extensions, loc project) {
 	return { location | /file(location) <- crawl(project), !startsWith(location.file, "."), (toLowerCase(location.extension) in extensionsLowerCase) || location.extension in extensions};
 }
 
-// Function to create a list of Declarations with a given java file location
-list[Declaration] getDeclarations(loc location){
-	M3 model = createM3FromEclipseProject(location);
+//// Function to create a list of Declarations with a given java file location
+//list[Declaration] getDeclarations(loc location){
+//	M3 model = createM3FromEclipseProject(location);
+//	list[Declaration] asts = [];
+//	for (m <- model.containment, m[0].scheme == "java+compilationUnit"){
+//		asts += createAstFromFile(m[0], true);
+//	}
+//	return asts;
+//}
+
+list[Declaration] getDeclarations(M3 model){
 	list[Declaration] asts = [];
 	for (m <- model.containment, m[0].scheme == "java+compilationUnit"){
 		asts += createAstFromFile(m[0], true);
@@ -33,17 +41,11 @@ list[Declaration] getDeclarations(loc location){
 	return asts;
 }
 
-// Function that parses the contents of a loc of a file to txt
-public str fileContent(loc file) {
-	return readFile(file);
-}
-
 // Function that returns all method statements from a list of Declarations
 list[Statement] getStatements(list[Declaration] declarations) {
 	list[Statement] methods = [];
 	
 	visit(declarations) {
-	 	case \initializer(statement): methods += statement;
 	 	case \method(_,_,_,_,statement): methods += statement;
 	 	case \constructor(_,_,_,statement): methods += statement;
 	}
@@ -64,30 +66,30 @@ public int getLLOCStatement(Statement statement) {
 	visit (statement) {
 		case \assert(_): result += 1;
 		case \assert(_, _): result += 1;
+		case \block(statements): result += sum([getLLOCStatement(body) | body <- statements] + [0]);
 	    case \break(): result += 1;
 	    case \break(_): result += 1;
 	    case \continue(): result += 1;
 		case \continue(_): result += 1;   
-	    case \do(_, _) : result += 1;
+	    case \do(body, _) : result += 1 + getLLOCStatement(body);
 	    case \empty() : result += 1;
-	    case foreach(_, _, _) : result += 1;	
-		case \for(_, _, _) : result += 1;	
-		case \for(_, _, _, _) : result += 1;	
-		case \if(_, _) : result += 1;	
-		case \if(_, _, _) : result += 1;	
-		case \label(_, _) : result += 1;	
+	    case foreach(_, _, body) : result += 1 + getLLOCStatement(body);	
+		case \for(_, _, body) : result += 1 + getLLOCStatement(body);	
+		case \for(_, _, _, body) : result += 1 + getLLOCStatement(body);	
+		case \if(_, body) : result += 1 + getLLOCStatement(body);	
+		case \if(_, thenBranch, elseBranch) : result += 1 + getLLOCStatement(thenBranch) + getLLOCStatement(elseBranch);		
+		case \label(_, body) : result += 1 + getLLOCStatement(body);	
 		case \return(_) : result += 1;	
 		case \return(): result +=1;
-		case \switch(_, _): result += 1;
+		case \switch(_, statements): result += sum([getLLOCStatement(body) | body <- statements] + [0]);
 		case \case(_) : result += 1;	
 		case \defaultCase() : result += 1;
-		case \synchronizedStatement(_, _) : result += 1;
-		case \try(_, _) : result += 1;
-		case \try(_, _, _) : result += 2;
+		case \synchronizedStatement(_, body) : result += 1 + getLLOCStatement(body);
+		case \try(_, statements) : result += sum([getLLOCStatement(body) | body <- statements] + [0]);
 		case \throw(_) : result += 1;
-		case \catch(_, _) : result += 1;
+		case \catch(_, body) : result += 1 + getLLOCStatement(body);
 		case \declarationStatement(_) : result += 1;
-		case \while(_, _) : result += 1;
+		case \while(_, body) : result += 1 + getLLOCStatement(body);
 		case \expressionStatement(_) : result += 1;
 		case \conditional(_, _, _) : result += 1;		
 		case \constructorCall(_, _, _) : result += 1;
@@ -125,6 +127,11 @@ public int getCCStatement(Statement statement) {
         case infix(_, "||", _) : result += 1;
     }
     return result;
+}
+
+// Helper function to get a list with methods from a m3 project
+public list[loc] getMethods(M3 project) {
+	return toList(methods(project));
 }
 
 
