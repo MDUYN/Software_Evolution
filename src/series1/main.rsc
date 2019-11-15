@@ -51,12 +51,14 @@ void main(){
 	println("Calculating system level SIG scores");
 	println("Analysability: <displayRating(rateAnalysability(<volumeScore, duplicationScore, unitSizeScore, unitTestingScore>))>");
 	println("Changeability: <displayRating(rateAnalysability(<duplicationScore, unitComplexityScore>))>");
+	println("stability: <displayRating(unitTestingScore)>");
+	
 }
 
 // Helper function to transform score to SIG rating
 private str displayRating(int rating) {
 	switch(rating) {
-		case 1: return "- -";
+		case 1: return "--";
 		case 2: return "-";
 		case 3: return "o";
 		case 4: return "+";
