@@ -9,7 +9,6 @@ import util::Math;
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 
-
 // Function to filter a list of declarations on unit size and then filtering it against a specific amount of llocs
 public int filterUnitDistribution(list[int] unitSizes, int llocBound) {
 	// Filter the list against the given bound of lloc
@@ -28,33 +27,33 @@ public tuple[int, int, int, int] getUnitSizeDistribution(list[int] unitSizes) {
 	int amountSimpleRisk = filterUnitDistribution(unitSizes, 0, 15);
 	
 	//Amount of units between 15 and 30 LLOC
-	int amountModerateRisk = filterUnitDistribution(unitSizes, 15, 30);
+	int amountModerateRisk = filterUnitDistribution(unitSizes, 16, 30);
 	
 	//Amount of units between 30 and 60 LLOC
-	int amountHighRisk = filterUnitDistribution(unitSizes, 30, 60);
+	int amountHighRisk = filterUnitDistribution(unitSizes, 31, 60);
 	
 	//Amount of units equal or above 60 lines of code
-	int amountVeryHighRisk = filterUnitDistribution(unitSizes, 60);
+	int amountVeryHighRisk = filterUnitDistribution(unitSizes, 61);
 	
 	return <amountSimpleRisk, amountModerateRisk, amountHighRisk, amountVeryHighRisk>;
 }
-//
-//// This function returns the amount of stars evaluated from the unit size defined by SIG
-//// Ref: https://www.softwareimprovementgroup.com/wp-content/uploads/2019/08/20180509-SIG-TUViT-Evaluation-Criteria-Trusted-Product-Maintainability-Guidance-for-producers-1.pdf 
-//// Function that evaluates the given unit size sig metric percentages and returns a corresponding score back
+
+// This function returns the amount of stars evaluated from the unit size defined by SIG
+// Ref: https://www.softwareimprovementgroup.com/wp-content/uploads/2019/08/20180509-SIG-TUViT-Evaluation-Criteria-Trusted-Product-Maintainability-Guidance-for-producers-1.pdf 
+// Function that evaluates the given unit size sig metric percentages and returns a corresponding score back
 public int evaluateUnitSizeSigMetric(tuple[int amountSimpleRisk, int amountModerateRisk, int amountHighRisk, int amountVeryHighRisk] metrics, amountOfUnits) {
 	
 	int moderate = percent(metrics.amountModerateRisk, amountOfUnits);
 	int high = percent(metrics.amountHighRisk, amountOfUnits);
 	int veryHigh = percent(metrics.amountVeryHighRisk, amountOfUnits); 
 	
-	if(moderate <= 15.0 && high <= 5.0 && veryHigh <= 0.0) {
+	if(moderate <= 19.5 && high <= 10.9 && veryHigh <= 3.9) {
 		return 5;
-	} else if(moderate <= 20.0 && high <= 15.0 && veryHigh <= 5.0) {
+	} else if(moderate <= 26.0 && high <= 15.5 && veryHigh <= 6.5) {
 		return 4;
-	} else if(moderate <= 30.0 && high <= 20.0 && veryHigh <= 5.0) {
+	} else if(moderate <= 34.1 && high <= 22.2 && veryHigh <= 11.0) {
 		return 3;
-	} else if(moderate <= 40.0 && high <= 25.0 && veryHigh <= 10.0) {
+	} else if(moderate <= 45.9 && high <= 31.4 && veryHigh <= 18.1) {
 		return 2;
 	} else {
 		return 1;

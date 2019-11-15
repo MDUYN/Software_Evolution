@@ -7,11 +7,13 @@ import Tuple;
 
 import util::Math;
 import lang::java::m3::AST;
+import lang::java::m3::Core;
 
 // We determine the unit cc by calculating McCabe cyclomatic complexity of each unit.
 // For us the definition of a unit is just the same as SIG Maintainability Modelis, 
 // the smallest named piece of executable code.
-public list[int] getUnitCCs(list[Declaration] declarations) {
+public list[int] getUnitCCs(M3 model) {
+	list[Declaration] declarations = getDeclarations(model);
 	list[Statement] methods = getStatements(declarations);
 	
 	return [getCCStatement(method) | method <- methods];
@@ -29,8 +31,7 @@ public int filterCCDistribution(list[int] unitCCs, int ccLowerBound, int ccUperB
 	return size([unit | unit <- unitCCs, unit >= ccLowerBound && unit <= ccUperBound]);
 }
 
-public tuple[int, int, int, int] getCCSigMetric(list[Declaration] declarations) {
-	list[int] unitCCs = getUnitCCs(declarations);
+public tuple[int, int, int, int] getUnitCCDistribution(list[int] unitCCs) {
 	
 	//Amount of complexity units in the simple boundaries (1 - 10)
 	int amountSimpleRisk = filterCCDistribution(unitCCs, 1, 10);
@@ -42,7 +43,7 @@ public tuple[int, int, int, int] getCCSigMetric(list[Declaration] declarations) 
 	int amountHighRisk = filterCCDistribution(unitCCs, 21, 50);
 	
 	//Amount of complexity units in the simple boundaries (50 - infinite)
-	int amountVeryHighRisk = filterCCDistribution(unitCCs, 50);
+	int amountVeryHighRisk = filterCCDistribution(unitCCs, 51);
 	
 	return <amountSimpleRisk, amountModerateRisk, amountHighRisk, amountVeryHighRisk>;
 }
@@ -72,7 +73,7 @@ public tuple[int, int, int, int] getCCSigMetric(list[Declaration] declarations) 
 * high risk: 15% <= of LLOC
 * very high risk: 5% <= of LLOC
 */
-public int evaluateUnitComplexitySigMetric(tuple[int amountSimpleRisk, int amountModerateRisk, int amountHighRisk, int amountVeryHighRisk] metrics, int totalLLOCUnits) {
+public int evaluateUnitCCSigMetric(tuple[int amountSimpleRisk, int amountModerateRisk, int amountHighRisk, int amountVeryHighRisk] metrics, int totalLLOCUnits) {
 	int moderate = percent(metrics.amountModerateRisk, totalLLOCUnits);
 	int high = percent(metrics.amountHighRisk, totalLLOCUnits);
 	int veryHigh = percent(metrics.amountVeryHighRisk, totalLLOCUnits);

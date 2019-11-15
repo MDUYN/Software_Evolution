@@ -23,8 +23,8 @@ void main(){
 	println("Calculating scores for <project>");
 	
 	println("Determining volume rating for project");	
-	int volumeScore = 1;
-	//println("LLOC size = <evaluateJavaVolumeScore(calcLLOC(declarations))>");
+	
+	
 
 
 	// Calculate the unit sizes and evaluate them against SIG guidelines
@@ -35,8 +35,9 @@ void main(){
 	
 	// Calculate the unit complexity and rate it according to the SIG metrics
 	println("Determining unit complexity rating for project");	
-	int unitComplexityScore = 1;
-	println("Unit complexity score according to SIG <displayRating(unitComplexityScore)>");
+	list[int] unitCCs = getUnitCCs(model);
+	int complexityScore = evaluateUnitCCSigMetric(getUnitCCDistribution(unitCCs), size(unitCCs));
+	println("Unit CC score according to SIG <displayRating(complexityScore)>");
 	
 	// Calculate the duplications SIG score for the system
 	println("Determining duplication rating for project");	
