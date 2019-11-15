@@ -11,27 +11,55 @@ import series1::metrics::unit_size;
 import series1::metrics::unit_complexity;
 import series1::metrics::volume;
 
+import series1::ratings::analysability;
+
 void main(){
 	loc project = |project://smallsql0.21_src|;
 	//loc project = |project://hsqldb-2.3.1|;
 	M3 model = createM3FromEclipseProject(project);
 	
+	println("Calculating scores for <project>");
 	
-	//println("Calculating scores for <project>");
+	println("Determining volume rating for project");	
+	int volumeScore = 1;
 	//println("LLOC size = <evaluateJavaVolumeScore(calcLLOC(declarations))>");
 
 
 	// Calculate the unit sizes and evaluate them against SIG guidelines
-	println("Calculating unit sizes with LOC");	
-	
+	println("Determining unit size rating for project");	
 	list[int] unitSizesLOC = getLOCUnitSizes(model);
-	println("Unit size score according to SIG = <evaluateUnitSizeSigMetric(getUnitSizeDistribution(unitSizesLOC), size(unitSizesLOC))> stars");
-	
-	println("Calculating unit sizes with LLOC");	
-	
-	list[int] unitSizesLLOC = getLLOCUnitSizes(model);
-	println("Unit size score according to SIG = <evaluateUnitSizeSigMetric(getUnitSizeDistribution(unitSizesLLOC), size(unitSizesLLOC))> stars");
+	int unitSizeScore = evaluateUnitSizeSigMetric(getUnitSizeDistribution(unitSizesLOC), size(unitSizesLOC));
+	println("Unit size score according to SIG <displayRating(unitSizeScore)>");
 	
 	// Calculate the unit complexity and rate it according to the SIG metrics
-	//println("Unit complexity score according to SIG = <evaluateUnitComplexitySigMetric(getCCSigMetric(declarations), sum([getLLOCStatement(statement) | statement <- statements]))> stars");
+	println("Determining unit complexity rating for project");	
+	int unitComplexity = 1;
+	println("Unit complexity score according to SIG <displayRating(unitComplexity)>");
+	
+	// Calculate the duplications SIG score for the system
+	println("Determining duplication rating for project");	
+	int duplicationScore = 1;
+	println("Duplication score according to SIG <displayRating(duplicationScore)>");
+	
+	// Calculate the duplications SIG score for the system
+	println("Determining unit test rating for project");	
+	int unitTestingScore = 1;
+	println("Unit test score according to SIG <displayRating(unitTestingScore)>");
+	
+	// Calculate system scores
+	println("Calculating system level SIG scores");
+	println("Analysability: <displayRating(rateAnalysability(<volumeScore, duplicationScore, unitSizeScore, unitTestingScore>))>");
 }
+
+// Helper function to transform score to SIG rating
+private str displayRating(int rating) {
+	switch(rating) {
+		case 1: return "- -";
+		case 2: return "-";
+		case 3: return "o";
+		case 4: return "+";
+		case 5: return "++";
+		default: return "?";
+	}
+}
+
