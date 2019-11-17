@@ -16,3 +16,12 @@ test bool testUnitSize() {
 	println(unitSizes);
 	return (1 == 1);
 }
+
+test bool testUnitComplexity() {
+	loc fileLocation = |project://unitMetricsTest|;
+	M3 model = createM3FromEclipseProject(fileLocation);
+	
+	list[int] unitCCs = (getUnitCCs(model));
+	println(unitCCs);
+	return (1 == 1);
+}
