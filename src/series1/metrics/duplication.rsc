@@ -5,6 +5,10 @@ import parser;
 
 import List;
 import String;
+import Map;
+
+import IO;
+import util::Math;
 
 list[str] partition(list[str] lines){
 	list[str] retval = [];
@@ -17,7 +21,7 @@ list[str] partition(list[str] lines){
 	list[str] next = lines[pStart .. pEnd];
 	
 	do {
-		retval += ("" | it + e | str e <- next);
+		retval += intercalate("", next);
 		pStart += 1;
 		pEnd += 1;
 		next = lines[pStart .. pEnd];
@@ -26,10 +30,16 @@ list[str] partition(list[str] lines){
 	return retval;
 }
 
-int findDuplicateBlocks(list[str] file, list[str] rhs) {
-	int retval = 0;
-	for(str f <- file) {
-		if(f in rhs) retval += 1;
-	}
-	return retval;
+int getDuplicationCount(list[str] partitions) {
+	lrel[str keys, int values] dist = toList(distribution(partitions));
+	
+	return sum([(i - 1) * 6 | i <- dist.values]);
+}
+
+real calcDuplicationPercentage(set[loc] files) {
+	list[list[str]] cleaned = [clean(f) | f <- files];
+	int fullCount = sum([size(c) | c <- cleaned]);
+	list[str] ps = ([] | it + partition(c) | c <- cleaned);
+	int dcount = getDuplicationCount(ps);
+	return 100 * (dcount / (toReal(fullCount)));
 }
