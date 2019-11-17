@@ -12,9 +12,8 @@ list[str] cleanFile(loc file){
 }
 
 bool isCommentLine(str line) {
-	return /^[\/*}{]/ := line;
+	return /^[\/*]/ := line;
 }
-
 
 list[str] clean(loc file) {
 	list[str] retval = [];
