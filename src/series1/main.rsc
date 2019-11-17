@@ -9,6 +9,7 @@ import lang::java::jdt::m3::Core;
 
 import series1::metrics::unit_size;
 import series1::metrics::unit_complexity;
+import series1::metrics::unit_test;
 import series1::metrics::volume;
 
 import series1::ratings::analysability;
@@ -18,14 +19,12 @@ import series1::ratings::testability;
 void main(){
 	loc project = |project://smallsql0.21_src|;
 	//loc project = |project://hsqldb-2.3.1|;
-	M3 model = createM3FromEclipseProject(project);
+	M3 model = createM3FromDirectory(project);
 	
 	println("Calculating scores for <project>");
 	
 	println("Determining volume rating for project");	
 	
-	
-
 
 	// Calculate the unit sizes and evaluate them against SIG guidelines
 	println("Determining unit size rating for project");	
@@ -47,6 +46,8 @@ void main(){
 	// Calculate the duplications SIG score for the system
 	println("Determining unit test rating for project");	
 	int unitTestingScore = 1;
+	println("Amount of unit test asserts <getAmountOfAsserts(model)>");
+	println(unitTestAbility(model));
 	println("Unit test score according to SIG <displayRating(unitTestingScore)>");
 	
 	// Calculate system scores
