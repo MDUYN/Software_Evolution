@@ -127,4 +127,50 @@ public int getCCStatement(Statement statement) {
     return result;
 }
 
+str pad(int i){
+	return right("<i>", 7);
+}
+
+public void printFoo(){
+	int volumeMetric = 13;
+	int ccMetric = 10;
+	int dupMetric = 5;
+	int sizeMetric = 10;
+	int testMetric = 9;
+	
+	println("                 ||       |   c   |       |       |       ||");
+	println("                 ||       |   o   |       |       |       ||");
+	println("                 ||       |   m   |       |       |       ||");
+	println("                 ||       |   p   |       |       |       ||");
+	println("                 ||       |   l   |       |       |       ||");
+	println("                 ||       |   e   |       |       |       ||");
+	println("                 ||       |   x   |       |       |       ||");
+	println("                 ||       |   i   |       |       |   u   ||");
+	println("                 ||       |   t   |   d   |       |   n   ||");
+	println("                 ||       |   y   |   u   |       |   i   ||");
+	println("                 ||       |       |   p   |   u   |   t   ||");
+	println("                 ||       |   p   |   l   |   n   |       ||");
+	println("                 ||       |   e   |   i   |   i   |   t   ||");
+	println("                 ||   v   |   r   |   c   |   t   |   e   ||");
+	println("                 ||   o   |       |   a   |       |   s   ||");
+	println("                 ||   l   |   u   |   t   |   s   |   t   ||");
+	println("                 ||   u   |   n   |   i   |   i   |   i   ||");
+	println("                 ||   m   |   i   |   o   |   z   |   n   ||");
+	println("                 ||   e   |   t   |   n   |   e   |   g   ||");
+	println("-----------------||-------|-------|-------|-------|-------||");
+	println("metric           ||<pad(volumeMetric)>|<pad(ccMetric)>|<pad(dupMetric)>|<pad(sizeMetric)>|<pad(testMetric)>||");
+	println("-----------------||-------|-------|-------|-------|-------||");
+	println("analysability    ||-------|-------|-------|-------|-------||");
+	println("-----------------||-------|-------|-------|-------|-------||");
+	println("changeability    ||-------|-------|-------|-------|-------||");
+	println("-----------------||-------|-------|-------|-------|-------||");
+	println("stability        ||-------|-------|-------|-------|-------||");
+	println("-----------------||-------|-------|-------|-------|-------||");
+	println("testability      ||-------|-------|-------|-------|-------||");
+	println("-----------------||-------|-------|-------|-------|-------||");
+	println("-----------------||---------------------------------------||");
+	println("MAINTAINABILITY  ||-------|-------|-------|-------|-------||");
+	println("-----------------||---------------------------------------||");
+	println("----------------------------------------------------------||");
+}
 
