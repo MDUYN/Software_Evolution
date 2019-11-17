@@ -7,6 +7,8 @@ import Map;
 import util::FileSystem;
 import String;
 
+import lang::java::m3::AST;
+import lang::java::jdt::m3::Core;
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 import lang::java::jdt::m3::Core;
@@ -14,14 +16,6 @@ import lang::java::jdt::m3::AST;
 import analysis::m3::AST;
 
 // Function to find all file locations matched against a set of extensions
-set[loc] extractFileLocations(set[str] extensions, loc project) {
-	
-	// Make sure that you convert all the file extensions to lower case
-	set[str] extensionsLowerCase = { toLowerCase(e) | e <- extensions};
-	
-	// Create a set of all the locations
-	return { location | /file(location) <- crawl(project), !startsWith(location.file, "."), (toLowerCase(location.extension) in extensionsLowerCase) || location.extension in extensions};
-}
 
 //// Function to create a list of Declarations with a given java file location
 //list[Declaration] getDeclarations(loc location){
@@ -32,6 +26,10 @@ set[loc] extractFileLocations(set[str] extensions, loc project) {
 //	}
 //	return asts;
 //}
+
+list[loc] getFileLocations(M3 model) {
+	return toList(files(model));
+}
 
 list[Declaration] getDeclarations(M3 model){
 	list[Declaration] asts = [];
