@@ -64,7 +64,7 @@ public int evaluateUnitSizeSigMetric(tuple[int amountSimpleRisk, int amountModer
 public list[int] getLOCUnitSizes(M3 model) {	
 	
 	// Clean each unit and count the amount of lines
-	return [ size(cleanFile(location)) | location <- getMethods(model) ]; 	
+	return [ size(clean(location)) | location <- getMethods(model) ]; 	
 }
 
 public list[int] getLLOCUnitSizes(M3 model) {

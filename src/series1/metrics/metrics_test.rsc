@@ -13,8 +13,7 @@ test bool testUnitSize() {
 	M3 model = createM3FromEclipseProject(fileLocation);
 	
 	list[int] unitSizes = (getLOCUnitSizes(model));
-	println(unitSizes);
-	return (1 == 1);
+	return (sort(unitSizes) == sort([9, 12, 12, 8, 5, 8, 5]));
 }
 
 test bool testUnitComplexity() {
@@ -22,6 +21,5 @@ test bool testUnitComplexity() {
 	M3 model = createM3FromEclipseProject(fileLocation);
 	
 	list[int] unitCCs = (getUnitCCs(model));
-	println(unitCCs);
-	return (1 == 1);
+	return (sort(unitCCs) == sort([3, 3, 3, 5, 1, 3, 2]));
 }
