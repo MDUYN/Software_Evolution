@@ -2,6 +2,6 @@ module series1::ratings::changeability
 
 import util::Math;
 
-public int rateChangeAbility(tuple[int unitComplexityScore, int duplicationScore] scores) {
-	return round((toReal(scores.unitComplexityScore) + toReal(scores.duplicationScore)) / 2.0);
+public int rateChangeAbility(int unitComplexityScore, int duplicationScore) {
+	return round ((unitComplexityScore + duplicationScore) / 4.0);
 }

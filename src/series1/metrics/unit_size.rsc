@@ -40,7 +40,7 @@ public tuple[int, int, int, int] getUnitSizeDistribution(list[int] unitSizes) {
 // This function returns the amount of stars evaluated from the unit size defined by SIG
 // Ref: https://www.softwareimprovementgroup.com/wp-content/uploads/2019/08/20180509-SIG-TUViT-Evaluation-Criteria-Trusted-Product-Maintainability-Guidance-for-producers-1.pdf 
 // Function that evaluates the given unit size sig metric percentages and returns a corresponding score back
-public int evaluateUnitSizeSigMetric(tuple[int amountSimpleRisk, int amountModerateRisk, int amountHighRisk, int amountVeryHighRisk] metrics, amountOfUnits) {
+public int evaluateUnitSizeSigMetric(tuple[int amountSimpleRisk, int amountModerateRisk, int amountHighRisk, int amountVeryHighRisk] metrics, int amountOfUnits) {
 	
 	int moderate = percent(metrics.amountModerateRisk, amountOfUnits);
 	int high = percent(metrics.amountHighRisk, amountOfUnits);
