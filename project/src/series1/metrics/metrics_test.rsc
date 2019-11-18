@@ -3,8 +3,14 @@ module series1::metrics::metrics_test
 import series1::metrics::unit_size;
 import series1::metrics::unit_complexity;
 import series1::metrics::duplication;
+import series1::metrics::volume;
 
+import lang::java::m3::Core;
+import lang::java::m3::AST;
 import lang::java::jdt::m3::Core;
+import lang::java::jdt::m3::AST;
+
+import util::FileSystem;
 
 import List;
 import IO;
@@ -36,4 +42,10 @@ test bool testDuplication() {
 	real expected = 100 * (12 / 24.0);
 	
 	return(percentage == expected);
+}
+
+test bool testVolume() {
+	list[loc] files = [ location | /file(location) <- crawl(|project://unitMetricsTest/src/unitMetricsTest|)];
+	int sloc = calcSLOC(files);
+	return (sloc == 91);
 }
