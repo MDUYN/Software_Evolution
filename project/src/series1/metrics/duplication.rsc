@@ -33,7 +33,7 @@ list[str] partition(list[str] lines){
 int getDuplicationCount(list[str] partitions) {
 	lrel[str keys, int values] dist = toList(distribution(partitions));
 	
-	return sum([(i - 1) * 6 | i <- dist.values]);
+	return sum([(i - 1) * 12 | i <- dist.values]);
 }
 
 real calcDuplicationPercentage(list[loc] files) {
@@ -41,6 +41,7 @@ real calcDuplicationPercentage(list[loc] files) {
 	int fullCount = sum([size(c) | c <- cleaned]);
 	list[str] ps = ([] | it + partition(c) | c <- cleaned);
 	int dcount = getDuplicationCount(ps);
+	println("dcount: <dcount>");
 	return 100 * ((dcount / (toReal(fullCount))));
 }
 
