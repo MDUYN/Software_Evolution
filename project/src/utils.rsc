@@ -135,29 +135,24 @@ str padCentre(str input, int p) {
 }
 
 void printBlankLine() {
-	println("-----------------||-------|-------|-------|-------|-------||-----||");
+	println("-----------------||-------|-------|-------|-------||-----||");
+}
+void printSuperBlankLine() {
+	println("-----------------||--------------------------------------||");
 }
 
 void printHeader(){
-	println("                 ||       |   c   |       |       ||     ||");
-	println("                 ||       |   o   |       |       ||     ||");
-	println("                 ||       |   m   |       |       ||     ||");
-	println("                 ||       |   p   |       |       ||     ||");
-	println("                 ||       |   l   |       |       ||     ||");
-	println("                 ||       |   e   |       |       ||     ||");
-	println("                 ||       |   x   |       |       ||     ||");
-	println("                 ||       |   i   |       |       ||     ||");
-	println("                 ||       |   t   |   d   |       ||     ||");
-	println("                 ||       |   y   |   u   |       ||     ||");
-	println("                 ||       |       |   p   |   u   ||     ||");
-	println("                 ||       |   p   |   l   |   n   ||     ||");
-	println("                 ||       |   e   |   i   |   i   ||     ||");
-	println("                 ||   v   |   r   |   c   |   t   ||  r  ||");
-	println("                 ||   o   |       |   a   |       ||  a  ||");
-	println("                 ||   l   |   u   |   t   |   s   ||  t  ||");
-	println("                 ||   u   |   n   |   i   |   i   ||  i  ||");
-	println("                 ||   m   |   i   |   o   |   z   ||  n  ||");
-	println("                 ||   e   |   t   |   n   |   e   ||  g  ||");
+	println("                 ||       |       |   d   |       ||     ||");
+	println("                 ||       |   c   |   u   |       ||     ||");
+	println("                 ||       |   o   |   p   |   u   ||     ||");
+	println("                 ||       |   m   |   l   |   n   ||     ||");
+	println("                 ||       |   p   |   i   |   i   ||     ||");
+	println("                 ||   v   |   l   |   c   |   t   ||  r  ||");
+	println("                 ||   o   |   e   |   a   |       ||  a  ||");
+	println("                 ||   l   |   x   |   t   |   s   ||  t  ||");
+	println("                 ||   u   |   i   |   i   |   i   ||  i  ||");
+	println("                 ||   m   |   t   |   o   |   z   ||  n  ||");
+	println("                 ||   e   |   y   |   n   |   e   ||  g  ||");
 }
 
 void printMetrics (int volumeMetric, tuple[int,int,int,int] ccMetric, int dupMetric, tuple[int,int,int,int] sizeMetric){
