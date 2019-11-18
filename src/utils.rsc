@@ -120,50 +120,65 @@ public list[loc] getMethods(M3 project) {
 	return toList(methods(project));
 }
 
-str pad(int i){
+str pad(&T i){
 	return right("<i>", 7);
 }
 
-public void printFoo(){
-	int volumeMetric = 13;
-	int ccMetric = 10;
-	int dupMetric = 5;
-	int sizeMetric = 10;
-	int testMetric = 9;
-	
-	println("                 ||       |   c   |       |       |       ||");
-	println("                 ||       |   o   |       |       |       ||");
-	println("                 ||       |   m   |       |       |       ||");
-	println("                 ||       |   p   |       |       |       ||");
-	println("                 ||       |   l   |       |       |       ||");
-	println("                 ||       |   e   |       |       |       ||");
-	println("                 ||       |   x   |       |       |       ||");
-	println("                 ||       |   i   |       |       |   u   ||");
-	println("                 ||       |   t   |   d   |       |   n   ||");
-	println("                 ||       |   y   |   u   |       |   i   ||");
-	println("                 ||       |       |   p   |   u   |   t   ||");
-	println("                 ||       |   p   |   l   |   n   |       ||");
-	println("                 ||       |   e   |   i   |   i   |   t   ||");
-	println("                 ||   v   |   r   |   c   |   t   |   e   ||");
-	println("                 ||   o   |       |   a   |       |   s   ||");
-	println("                 ||   l   |   u   |   t   |   s   |   t   ||");
-	println("                 ||   u   |   n   |   i   |   i   |   i   ||");
-	println("                 ||   m   |   i   |   o   |   z   |   n   ||");
-	println("                 ||   e   |   t   |   n   |   e   |   g   ||");
-	println("-----------------||-------|-------|-------|-------|-------||");
-	println("metric           ||<pad(volumeMetric)>|<pad(ccMetric)>|<pad(dupMetric)>|<pad(sizeMetric)>|<pad(testMetric)>||");
-	println("-----------------||-------|-------|-------|-------|-------||");
-	println("analysability    ||-------|-------|-------|-------|-------||");
-	println("-----------------||-------|-------|-------|-------|-------||");
-	println("changeability    ||-------|-------|-------|-------|-------||");
-	println("-----------------||-------|-------|-------|-------|-------||");
-	println("stability        ||-------|-------|-------|-------|-------||");
-	println("-----------------||-------|-------|-------|-------|-------||");
-	println("testability      ||-------|-------|-------|-------|-------||");
-	println("-----------------||-------|-------|-------|-------|-------||");
-	println("-----------------||---------------------------------------||");
-	println("MAINTAINABILITY  ||-------|-------|-------|-------|-------||");
-	println("-----------------||---------------------------------------||");
-	println("----------------------------------------------------------||");
+str pad(int i, int p){
+	return right("<i>", p);
 }
 
+str padCentre(str input, int p) {
+	int s = (p - size(input)) / 2;
+	str l = left("", s);
+	return "<l><input><l>";
+}
+
+void printBlankLine() {
+	println("-----------------||-------|-------|-------|-------|-------||-----||");
+}
+
+void printHeader(){
+	println("                 ||       |   c   |       |       ||     ||");
+	println("                 ||       |   o   |       |       ||     ||");
+	println("                 ||       |   m   |       |       ||     ||");
+	println("                 ||       |   p   |       |       ||     ||");
+	println("                 ||       |   l   |       |       ||     ||");
+	println("                 ||       |   e   |       |       ||     ||");
+	println("                 ||       |   x   |       |       ||     ||");
+	println("                 ||       |   i   |       |       ||     ||");
+	println("                 ||       |   t   |   d   |       ||     ||");
+	println("                 ||       |   y   |   u   |       ||     ||");
+	println("                 ||       |       |   p   |   u   ||     ||");
+	println("                 ||       |   p   |   l   |   n   ||     ||");
+	println("                 ||       |   e   |   i   |   i   ||     ||");
+	println("                 ||   v   |   r   |   c   |   t   ||  r  ||");
+	println("                 ||   o   |       |   a   |       ||  a  ||");
+	println("                 ||   l   |   u   |   t   |   s   ||  t  ||");
+	println("                 ||   u   |   n   |   i   |   i   ||  i  ||");
+	println("                 ||   m   |   i   |   o   |   z   ||  n  ||");
+	println("                 ||   e   |   t   |   n   |   e   ||  g  ||");
+}
+
+void printMetrics (int volumeMetric, tuple[int,int,int,int] ccMetric, int dupMetric, tuple[int,int,int,int] sizeMetric){
+	println("metric           ||<pad(volumeMetric)>|<pad(ccMetric<0>)>|<pad(dupMetric,6)>%|<pad(sizeMetric<0>)>||xxxxx||");
+	println("                 ||-------|<pad(ccMetric<1>)>|-------|<pad(sizeMetric<1>)>||xxxxx||");
+	println("                 ||-------|<pad(ccMetric<2>)>|-------|<pad(sizeMetric<2>)>||xxxxx||");
+	println("                 ||-------|<pad(ccMetric<3>)>|-------|<pad(sizeMetric<3>)>||xxxxx||");
+}
+
+void printAnalysability(str rating){
+	println("analysability    ||   X   |-------|   X   |   X   ||<padCentre(rating,5)>||");
+}
+
+void printChangeability(str rating) {
+	println("changeability    ||-------|   X   |   X   |-------||<padCentre(rating,5)>||");
+}
+
+void printStability(str rating) {
+	println("stability        ||-------|-------|-------|-------||<padCentre(rating,5)>||");
+}
+
+void printMaintainability(str rating) {
+	println("MAINTAINABILITY  ||-------|-------|-------|-------||<padCentre(rating,5)>||");
+}
