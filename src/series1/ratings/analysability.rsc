@@ -1,6 +1,5 @@
 module series1::ratings::analysability
 
-import Tuple;
 import util::Math;
 
 public int rateAnalysAbility(tuple[int volumeScore, int DuplicationScore, int unitSizeScore, int unitTestingScore] scores) {
