@@ -38,7 +38,6 @@ test bool testUnitComplexity() {
 test bool testDuplication() {
 	list[loc] files = [|project://unitMetricsTest/src/unitMetricsTest/Duplication1.java|,|project://unitMetricsTest/src/unitMetricsTest/Duplication2.java|];
 	real percentage = calcDuplicationPercentage(files);
-	println(percentage);
 	real expected = 100 * (12 / 24.0);
 	
 	return(percentage == expected);
