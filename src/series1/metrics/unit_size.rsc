@@ -59,7 +59,7 @@ public int evaluateUnitSizeSigMetric(tuple[int amountSimpleRisk, int amountModer
 	}
 }
 
-// Function to get of every unit the unit size according to lines of code.
+// Function to get of every unit the unit size according to source lines of code.
 public list[int] getLOCUnitSizes(M3 model) {	
 	
 	// Clean each unit and count the amount of lines
