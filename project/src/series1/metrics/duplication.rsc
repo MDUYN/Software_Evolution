@@ -33,7 +33,7 @@ list[str] partition(list[str] lines){
 int getDuplicationCount(list[str] partitions) {
 	lrel[str keys, int values] dist = toList(distribution(partitions));
 	
-	return sum([(i - 1) * 12 | i <- dist.values]);
+	return sum([i * 6 | i <- dist.values, i > 1]);
 }
 
 real calcDuplicationPercentage(list[loc] files) {
