@@ -41,5 +41,6 @@ real calcDuplicationPercentage(set[loc] files) {
 	int fullCount = sum([size(c) | c <- cleaned]);
 	list[str] ps = ([] | it + partition(c) | c <- cleaned);
 	int dcount = getDuplicationCount(ps);
-	return 100 * (dcount / (toReal(fullCount)));
+	real p = 1 - (dcount / (toReal(fullCount)));
+	return 100 * p;
 }

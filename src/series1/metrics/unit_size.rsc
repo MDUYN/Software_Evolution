@@ -3,7 +3,6 @@ module series1::metrics::unit_size
 import utils;
 import parser;
 import List;
-import Tuple;
 
 import util::Math;
 import lang::java::m3::Core;

@@ -1,6 +1,5 @@
 module series1::ratings::testability
 
-import Tuple;
 import util::Math;
 
 public int rateTestAbility(tuple[int unitComplexityScore, int unitSizeScore, int unitTestingScore] scores) {
