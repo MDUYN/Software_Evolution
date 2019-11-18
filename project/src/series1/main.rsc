@@ -14,13 +14,9 @@ import series1::metrics::unit_test;
 import series1::metrics::volume;
 import series1::metrics::duplication;
 
-import series1::ratings::analysability;
-import series1::ratings::changeability;
-import series1::ratings::testability;
-
 void main(){
-	loc project = |project://smallsql0.21_src|;
-	//loc project = |project://hsqldb-2.3.1|;
+	//loc project = |project://smallsql0.21_src|;
+	loc project = |project://hsqldb-2.3.1|;
 	M3 model = createM3FromEclipseProject(project);
 	list[loc] files = getFileLocations(model);
 	
@@ -32,7 +28,6 @@ void main(){
 	tuple[int,int,int,int] unitSize = getUnitSizeDistribution(unitSizesLOC);
 	int unitSizeScore = evaluateUnitSizeSigMetric(unitSize, size(unitSizesLOC));
 	
-	println("Determining unit complexity rating for project");	
 	list[int] unitCCs = getUnitCCs(model);
 	tuple[int,int,int,int] complexity = getUnitCCDistribution(unitCCs);
 	int complexityScore = evaluateUnitCCSigMetric(getUnitCCDistribution(unitCCs), size(unitCCs));
@@ -40,32 +35,27 @@ void main(){
 	real duplicationPercentage = calcDuplicationPercentage(files);
 	int duplicationScore = evaluateDuplication(duplicationPercentage);
 	
-	// Calculate the duplications SIG score for the system
-	//println("Determining unit test rating for project");	
-	int unitTestingScore = 1;
-	//println("Amount of unit test asserts <getAmountOfAsserts(model)>");
-	//println(unitTestAbility(model));
-	//println("Unit test score according to SIG <displayRating(unitTestingScore)>");
-	
-	// Calculate system scores
-	println("Calculating system level SIG scores");
-	println("Analysability: <displayRating(rateAnalysAbility(<volumeScore, duplicationScore, unitSizeScore, unitTestingScore>))>");
-	println("Changeability: <displayRating(rateChangeAbility(<duplicationScore, complexityScore>))>");
-	println("Stability: <displayRating(unitTestingScore)>");
-	
+	int aRating = average([volumeScore, duplicationScore, unitSizeScore]);
+	int cRating = average([duplicationScore, complexityScore]);
+	int mRating = average([aRating, cRating]);
+
+	printSuperBlankLine();
 	printHeader();
 	printBlankLine();
 	printMetrics(volume, complexity, round(duplicationPercentage), unitSize);
+	printSuperBlankLine();
+	printSuperBlankLine();
+	printAnalysability(displayRating(aRating));
+	printBlankLine();
+	printChangeability(displayRating(cRating));
 	printBlankLine();
 	printBlankLine();
-	printAnalysability(displayRating(rateAnalysAbility(volumeScore, duplicationScore, unitSizeScore)));
+	printMaintainability(displayRating(mRating));
 	printBlankLine();
-	printChangeability(displayRating(rateChangeAbility(duplicationScore, complexityScore)));
-	printBlankLine();
-	printTestability(displayRating(rateChangeAbility(complexityScore, unitSizeScore)));
-	
-	//printFoo(int volumeMetric, int ccMetric, int dupMetric, int sizeMetric, int testMetric)
+	printSuperBlankLine();
 }
+
+private int average(list[int] l) = round(sum(l) / toReal(size(l)));
 
 // Helper function to transform score to SIG rating
 private str displayRating(int rating) {
