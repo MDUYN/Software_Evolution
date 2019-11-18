@@ -5,12 +5,6 @@ import utils;
 import IO;
 import String;
 
-list[str] cleanFile(loc file){ 
-	 lines = [ line | line <-(readFileLines(file))];
-	 cleaned = [ replaceAll(line,"\t", "") | line <- lines];
-	 return [ line | line <- cleaned, /^[^\/]/ := line ];
-}
-
 bool isCommentLine(str line) {
 	return /^[\/*]/ := line;
 }
