@@ -36,11 +36,18 @@ int getDuplicationCount(list[str] partitions) {
 	return sum([(i - 1) * 6 | i <- dist.values]);
 }
 
-real calcDuplicationPercentage(set[loc] files) {
+real calcDuplicationPercentage(list[loc] files) {
 	list[list[str]] cleaned = [clean(f) | f <- files];
 	int fullCount = sum([size(c) | c <- cleaned]);
 	list[str] ps = ([] | it + partition(c) | c <- cleaned);
 	int dcount = getDuplicationCount(ps);
-	real p = 1 - (dcount / (toReal(fullCount)));
-	return 100 * p;
+	return 100 * ((dcount / (toReal(fullCount))));
+}
+
+int evaluateDuplication(real p) {
+		 if (p <  3.1) 	return 5;
+	else if (p <  5.1) 	return 4;
+	else if (p < 10.1) 	return 3;
+	else if (p < 20.1) 	return 2;
+	else 				return 1;
 }

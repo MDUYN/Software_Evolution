@@ -37,14 +37,14 @@ int calcLLOC(list[Declaration] ast){
 	return lloc;
 }
 
-int calcSLOC(set[loc] files) {
+int calcSLOC(list[loc] files) {
 	return sum([size(clean(f)) | f <- files]); 
 }
 
-str evaluateJavaVolumeScore(int volume) {
-		 if (volume <=   6600) 	return "++";
-	else if (volume <=  24600) 	return 	"+";
-	else if (volume <=  66500) 	return 	"o";
-	else if (volume <= 131000) 	return 	"-";
-	else 						return "--";
+int evaluateJavaVolumeScore(int volume) {
+		 if (volume <=   6600) 	return 5;
+	else if (volume <=  24600) 	return 4;
+	else if (volume <=  66500) 	return 3;
+	else if (volume <= 131000) 	return 2;
+	else 						return 1;
 }
