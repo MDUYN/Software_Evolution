@@ -1,20 +1,23 @@
 package unitMetricsTest;
 
+import java.io.IOException;
+
 public class Unit {
 	
 	// +3 complexity
-	public void ifTest() {
+	public int ifTest() {
 		int a = 1;
 		int b = 0;
 		if (a == 1) {
-			int aa = 1;
+			return 1;
 		} else if (b == 1) {
-			int bb = 1;
+			return 1;
 		}
+		return 3;
 	}
 	
 	// +3 complexity
-	public void caseTest() {
+	public String caseTest() {
         int month = 1;
         String monthString;
         switch (month) {
@@ -25,6 +28,8 @@ public class Unit {
             default: monthString = "Invalid month";
                      break;
     	}
+        
+        return monthString;
 	}
 
     // +3
@@ -44,6 +49,7 @@ public class Unit {
 	}
     
 	// +5
+	@SuppressWarnings("all")
 	public void shortcircuitTest() {
 		// 2 paths possible ?
 		if ((1 != 1) && (2 == 2)) {
@@ -58,7 +64,7 @@ public class Unit {
 	// +1
 	public void forTest() {
 		// +1
-		for(int i=0 i<10; i++){
+		for(int i=0; i<10; i++){
 			System.out.println("Count is: " + i);
 		}
 	}
@@ -67,6 +73,7 @@ public class Unit {
 	public void catchTest() {
 		// +3
 		try {
+			throw new IOException("");
 		} catch (IndexOutOfBoundsException e) {
 		    System.err.println("IndexOutOfBoundsException: " + e.getMessage());
 		} catch (IOException e) {
@@ -76,9 +83,9 @@ public class Unit {
 	
 	// +2
 	public void conditionalTest() {
-		int a, b;
+		int a, b = 2;
 		// + 2
-		a = 10;
+		a = b;
 		b = (a == 1) ? 20: 30;		
 	}
 }
