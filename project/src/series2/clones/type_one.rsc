@@ -16,12 +16,8 @@ map[node, lrel[node, loc]] addToBucketTypeOne(node nodeToAdd, loc projectLocatio
 	
 	// Check if the key is already in the bucket
 	if(bucket[nodeToAdd]?) {
-		
-		println("old node");
 		bucket[nodeToAdd] += <nodeToAdd, location>;
 	} else {	
-		println("new node");
-		
 		// Create a new entry in the bucket
 		bucket[nodeToAdd] = [<nodeToAdd, location>];
 	}
