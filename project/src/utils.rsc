@@ -186,4 +186,5 @@ public loc getLocationOfNode(node n) {
 	} else if (Statement s := n) {
 		return s.src;
 	}
+	return |unknown:///|;
 }
