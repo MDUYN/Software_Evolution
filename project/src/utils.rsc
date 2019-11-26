@@ -8,13 +8,11 @@ import util::FileSystem;
 import String;
 import Node;
 
+import analysis::m3::AST;
 import lang::java::m3::AST;
-import lang::java::jdt::m3::Core;
 import lang::java::m3::Core;
-import lang::java::m3::AST;
 import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
-import analysis::m3::AST;
 
 list[loc] getFileLocations(M3 model) {
 	return toList(files(model));
@@ -179,22 +177,13 @@ void printMaintainability(str rating) {
 	println("MAINTAINABILITY  ||-------|-------|-------|-------||<padCentre(rating,5)>||");
 }
 
-//public loc getLocationOfNode(Node node) {
-//	loc location = currentProject;
-//	
-//	if (Declaration d := subTree) { 
-//		if (d@src?) {
-//			location = d@src;
-//		}
-//	} else if (Expression e := subTree) {
-//		if (e@src?) {
-//			location = e@src;
-//		}
-//	} else if (Statement s := subTree) {
-//		if (s@src?) {
-//			location = s@src;
-//		}
-//	}
-//	
-//	return location;
-//}
+public loc getLocationOfNode(node n) {
+	
+	if (Declaration d := n) {
+		return d.src;
+	} else if (Expression e := n) {
+		return e.src;
+	} else if (Statement s := n) {
+		return s.src;
+	}
+}

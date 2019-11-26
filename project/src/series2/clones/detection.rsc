@@ -4,12 +4,17 @@ import List;
 import IO;
 import Map;
 import lang::java::m3::AST;
+import lang::java::jdt::m3::Core;
 
+import utils;
 
-public lrel[node fst, node snd] detect(list[Declaration] declarations, map[node, list[node]] (Node) addToBucketFunction) {
+public lrel[node fst, node snd] detect(loc project, map[node, lrel[node, loc]] (node, loc, map[node, lrel[node, loc]]) addToBucketFunction) {
 	int massThreshold = 25;
 	
-	map[node, list[node]] bucket = ();
+	M3 model = createM3FromEclipseProject(project);
+	map[node, lrel[node, loc]] bucket = (); 
+	
+	list[Declaration] declarations = getDeclarations(model);
 	
 	visit(declarations) {
 		case node subtree: {			
@@ -18,10 +23,11 @@ public lrel[node fst, node snd] detect(list[Declaration] declarations, map[node,
 			if (mass > massThreshold) {
 				
 				// Adding the subtree to the bucket
-				
+				bucket = addToBucketFunction(subtree, project, bucket); 
 			}
 		}	
 	}
+	println(size(bucket));
 	return null;
 }
 
