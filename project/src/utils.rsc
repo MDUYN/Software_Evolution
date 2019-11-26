@@ -6,6 +6,7 @@ import List;
 import Map;
 import util::FileSystem;
 import String;
+import Node;
 
 import lang::java::m3::AST;
 import lang::java::jdt::m3::Core;
@@ -177,3 +178,23 @@ void printStability(str rating) {
 void printMaintainability(str rating) {
 	println("MAINTAINABILITY  ||-------|-------|-------|-------||<padCentre(rating,5)>||");
 }
+
+//public loc getLocationOfNode(Node node) {
+//	loc location = currentProject;
+//	
+//	if (Declaration d := subTree) { 
+//		if (d@src?) {
+//			location = d@src;
+//		}
+//	} else if (Expression e := subTree) {
+//		if (e@src?) {
+//			location = e@src;
+//		}
+//	} else if (Statement s := subTree) {
+//		if (s@src?) {
+//			location = s@src;
+//		}
+//	}
+//	
+//	return location;
+//}
