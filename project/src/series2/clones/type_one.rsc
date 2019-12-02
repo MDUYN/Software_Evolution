@@ -6,28 +6,17 @@ import Map;
 
 import utils;
 
-map[node, lrel[node, loc]] addToBucketTypeOne(node nodeToAdd, loc projectLocation, map[node, lrel[node, loc]] bucket) {	
-	loc location = getLocationOfNode(nodeToAdd);
+map[int, lrel[node, loc]] addToBucketTypeOne(node nodeToAdd, map[int, lrel[node, loc]] buckets) {	
 	
-	// The location of the node should not be the project itself
-	if(location == projectLocation) {
-		return;
-	}
+	loc location = getLocationOfNode(nodeToAdd);
+	int mass = getMassOfNode(nodeToAdd);
 	
 	// Check if the key is already in the bucket
-	if(nodeToAdd in bucket) {
-		println("=============================================================================================");
-		println("Node already in subtree");
-		println(location);
-		println("=============================================================================================");
-		bucket[nodeToAdd] += <nodeToAdd, location>;
+	if(nodeToAdd in buckets) {
+		buckets[mass] += <nodeToAdd, location>;
 	} else {
-		println("=============================================================================================");	
-		println("Node not yet in subtree");
-		println(location);	
 		// Create a new entry in the bucket
-		bucket[nodeToAdd] = [<nodeToAdd, location>];
-		println("=============================================================================================");		
+		buckets[mass] = [<nodeToAdd, location>];
 	}
-	return bucket;
+	return buckets;
 }

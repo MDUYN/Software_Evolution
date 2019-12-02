@@ -188,3 +188,14 @@ public loc getLocationOfNode(node n) {
 	}
 	return |unknown:///|;
 }
+
+public int getMassOfNode(node x) {
+	int mass = 0;
+	
+	visit(x) {
+		case node subNode: { 
+			mass += 1; 
+		}
+	}
+	return mass;
+}

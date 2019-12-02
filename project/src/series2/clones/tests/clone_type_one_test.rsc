@@ -3,29 +3,37 @@ module series2::clones::tests::clone_type_one_test
 import IO;
 import List;
 import Map;
+import Node;
 import lang::java::m3::AST;
 
 import series2::clones::type_one;
-import series2::clones::detection;
+import utils;
 
+test bool testAddToBucketFunctions() {
+	int massThreshold = 10;
+	map[int, lrel[node, loc]] buckets = (); 	
+	loc fileLocation = |project://clonesTest/src/clonesTest/TypeOne.java|;
+	
+	Declaration ast = createAstFromFile(fileLocation, true);
 
-test bool testAddToBucketTypeOne() {
-	int massThreshold = 5;
-	loc fileLocation = |project://series2Test/src/series2Test/CloneOne.java|;
-	Declaration declaration = createAstFromFile(fileLocation, true);
-	
-	map[node, lrel[node, loc]] bucket = (); 
-	
-	visit(declaration) {
-		case node subtree: {
-			int currentMass = getMassOfNode(subtree);	
+	visit (ast) {
+		case node x: {
+			int currentMass = getMassOfNode(x);
 			
-			if(currentMass >= massThreshold) {
-				// Adding the subtree to the bucket
-				bucket = addToBucketTypeOne(subtree, fileLocation, bucket); 
+			loc location = getLocationOfNode(x);
+
+			// The location of the node should not be the project itself
+			if(location == fileLocation) {
+				return;
 			}
-		}	
+			
+			if (currentMass >= massThreshold) {
+				buckets = addToBucketTypeOne(x, buckets);
+			}
+		}
 	}
 	
-	return true;
+	// There should be 14 entries in the bucket
+	return (size(buckets) == 14);
 }
+
