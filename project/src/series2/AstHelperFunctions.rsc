@@ -2,7 +2,7 @@ module series2::AstHelperFunctions
 
 import lang::java::m3::AST;
 import lang::java::jdt::m3::Core;
-
+import Node;
 
 list[node] normaliseLeaves(list[node] ast){
 	return visit(ast) {
@@ -26,6 +26,5 @@ node normaliseLeaf(node n) {
 		case \prefix(_, e) => \prefix("+", e)
 		case \simpleName(_) => \simpleName("q")
 		case \memberValuePair(_, e) => \memberValuePair("q", e)
-		
 	}
 }

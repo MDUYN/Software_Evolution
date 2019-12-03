@@ -1,5 +1,6 @@
 module utils
 
+import String;
 import IO;
 import Set;
 import List;
@@ -198,4 +199,48 @@ public int getMassOfNode(node x) {
 		}
 	}
 	return mass;
+}
+
+public num calculateSimilarity(node first, node second) {
+	//Similarity = 2 x S / (2 x S + L + R)
+		
+	list[node] firstNodes = [];
+	list[node] secondNodes = [];
+	num s = 0;
+	num l = 0;
+	num r = 0;
+	
+	visit (first) {
+		case node x: {		
+ 			x = unsetRec(x, ("src"));
+	 		x = unsetRec(x, ("decl"));
+ 			firstNodes += x;
+		}
+	}
+
+	visit (second) {
+		case node x: {
+			x = unsetRec(x, ("src"));
+	 		x = unsetRec(x, ("decl"));
+			secondNodes += x;
+		}
+	}
+	
+	for(x <- firstNodes) {
+ 	 	
+		if(x in secondNodes) {
+			s += 1;
+		} else {
+			l += 1;
+		}
+	}
+	
+	for(x <- secondNodes) {
+	
+		if(x notin secondNodes) {
+			r += 1;
+		}
+	}	
+	
+	return (2 * s) / (2 * s + l + r);
 }
