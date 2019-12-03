@@ -8,36 +8,28 @@ import lang::java::jdt::m3::Core;
 
 import utils;
 
-public lrel[node fst, node snd] detect(loc project, map[node, lrel[node, loc]] (node, loc, map[node, lrel[node, loc]]) addToBucketFunction) {
-	int massThreshold = 25;
+public lrel[node fst, node snd] detect(loc project, map[int, lrel[node, loc]] (node, map[int, lrel[node, loc]]) addToBucketFunction) {
+	int massThreshold = 10;
 	
 	M3 model = createM3FromEclipseProject(project);
-	map[node, lrel[node, loc]] bucket = (); 
-	
+	map[int, lrel[node, loc]] buckets = (); 
 	list[Declaration] declarations = getDeclarations(model);
 	
 	visit(declarations) {
-		case node subtree: {			
-			int mass = getMassOfNode(subtree);
+		case node x: {			
+	
+			// The location of the node should not be the project itself
+			if(getLocationOfNode(x) == project) {
+				return;
+			}
 			
-			if (mass > massThreshold) {
-				
+			int mass = getMassOfNode(x);
+			
+			if (mass > massThreshold) {	
 				// Adding the subtree to the bucket
-				bucket = addToBucketFunction(subtree, project, bucket); 
+				buckets = addToBucketFunction(x, buckets); 
 			}
 		}	
 	}
-	println(size(bucket));
 	return null;
-}
-
-public int getMassOfNode(node x) {
-	int mass = 0;
-	
-	visit(x) {
-		case node subNode: { 
-			mass += 1; 
-		}
-	}
-	return mass;
 }
