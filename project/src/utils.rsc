@@ -21,8 +21,9 @@ list[loc] getFileLocations(M3 model) {
 
 list[Declaration] getDeclarations(M3 model){
 	list[Declaration] asts = [];
+	
 	for (m <- model.containment, m[0].scheme == "java+compilationUnit"){
-		asts += createAstFromFile(m[0], true);
+		asts += createAstFromFile(m[0], false);
 	}
 	return asts;
 }
@@ -201,46 +202,3 @@ public int getMassOfNode(node x) {
 	return mass;
 }
 
-public num calculateSimilarity(node first, node second) {
-	//Similarity = 2 x S / (2 x S + L + R)
-		
-	list[node] firstNodes = [];
-	list[node] secondNodes = [];
-	num s = 0;
-	num l = 0;
-	num r = 0;
-	
-	visit (first) {
-		case node x: {		
- 			x = unsetRec(x, ("src"));
-	 		x = unsetRec(x, ("decl"));
- 			firstNodes += x;
-		}
-	}
-
-	visit (second) {
-		case node x: {
-			x = unsetRec(x, ("src"));
-	 		x = unsetRec(x, ("decl"));
-			secondNodes += x;
-		}
-	}
-	
-	for(x <- firstNodes) {
- 	 	
-		if(x in secondNodes) {
-			s += 1;
-		} else {
-			l += 1;
-		}
-	}
-	
-	for(x <- secondNodes) {
-	
-		if(x notin secondNodes) {
-			r += 1;
-		}
-	}	
-	
-	return (2 * s) / (2 * s + l + r);
-}

@@ -4,22 +4,25 @@ import List;
 import IO;
 import Map;
 
+import series2::AstHelperFunctions;
 import utils;
 
 /**
 * That will add a Node to the bucket
 */
-public map[int, lrel[node, loc]] addToBucketTypeOne(node nodeToAdd, map[int, lrel[node, loc]] buckets) {	
+public map[node, lrel[node, loc]] addToBucketTypeOne(node nodeToAdd, map[node, lrel[node, loc]] buckets) {	
 	
 	loc location = getLocationOfNode(nodeToAdd);
-	int mass = getMassOfNode(nodeToAdd);
 	
+	// Remove attributes refering to location of the source
+	node x = removeDeclarationAttributes(nodeToAdd);
+		
 	// Check if the key is already in the bucket
-	if(mass in buckets) {
-		buckets[mass] += <nodeToAdd, location>;
-	} else {	
+	if(x in buckets) {
+		buckets[x] += <nodeToAdd, location>;
+	} else {		
 		// Create a new entry in the bucket
-		buckets[mass] = [<nodeToAdd, location>];
+		buckets[x] = [<nodeToAdd, location>];
 	}
 	return buckets;
 }

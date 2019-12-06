@@ -28,3 +28,47 @@ node normaliseLeaf(node n) {
 		case \memberValuePair(_, e) => \memberValuePair("q", e)
 	}
 }
+
+/*
+* This function remove all key word parameters attributes that refer to the location of a node.
+* This function is usefull when comparing nodes, because otherwise they are seen as different.
+*/ 
+public node removeDeclarationAttributes(node n) {
+	return unsetRec(n);
+}
+
+public num calculateSimilarity(node first, node second) {
+	//Similarity = 2 x S / (2 x S + L + R)
+		
+	list[node] firstNodes = [];
+	list[node] secondNodes = [];
+	num s = 0;
+	num l = 0;
+	num r = 0;
+	
+	//Remove all keyword parameters attributes that refer to the location of a node.
+	a = removeDeclarationAttributes(first);
+	b = removeDeclarationAttributes(second);
+	
+	for(x <- firstNodes) {
+ 	 	
+ 	 	// Both contain the subnode
+		if(x in secondNodes) {
+			s += 1;
+		} else {
+		
+			// Only the first node has the subnode
+			l += 1;
+		}
+	}
+	
+	for(x <- secondNodes) {
+		
+		// Only the second node has the subnode
+		if(x notin secondNodes) {
+			r += 1;
+		}
+	}	
+	
+	return (2 * s) / (2 * s + l + r);
+}
