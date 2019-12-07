@@ -19,10 +19,10 @@ public map[node, lrel[node, loc]] addToBucketTypeOne(node nodeToAdd, map[node, l
 		
 	// Check if the key is already in the bucket
 	if(x in buckets) {
-		buckets[x] += <nodeToAdd, location>;
+		buckets[x] += <x, location>;
 	} else {		
 		// Create a new entry in the bucket
-		buckets[x] = [<nodeToAdd, location>];
+		buckets[x] = [<x, location>];
 	}
 	return buckets;
 }

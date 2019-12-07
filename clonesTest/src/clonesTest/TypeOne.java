@@ -53,7 +53,7 @@ public class TypeOne {
 			a = d;
 		}
 		
-		if((2 * a) == (2 * c)) {
+		if((2 * d) == (2 * c)) {
 			b = d;
 		}
 		

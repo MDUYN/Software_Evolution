@@ -12,16 +12,10 @@ import Node;
 import series2::AstHelperFunctions;
 import utils;
 
-public map[node, list[tuple[node, loc]]] detect(
-	loc project, 
-	int nodeMassThreshold, 
-	map[node, lrel[node, loc]] (node, map[node, lrel[node, loc]]) addToBucketFunction, 
-	bool (tuple[node,loc], tuple[node,loc]) isCloneFunction
-	) {
+public map[node, list[tuple[node, loc]]] detect(loc project, int nodeMassThreshold, map[node, lrel[node, loc]] (node, map[node, lrel[node, loc]]) addToBucketFunction, bool (tuple[node,loc], tuple[node,loc]) isCloneFunction){
 	map[node, lrel[node, loc]] buckets = (); 
 	lrel[tuple[node,loc],tuple[node,loc]] clones = [];
 	map[node, list[tuple[node, loc]]] cloneClasses = ();
-	
 	
 	visit(getDeclarations(createM3FromEclipseProject(project))) {
 		

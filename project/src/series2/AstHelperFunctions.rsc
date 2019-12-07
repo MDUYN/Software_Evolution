@@ -1,7 +1,10 @@
 module series2::AstHelperFunctions
 
 import lang::java::m3::AST;
+import lang::java::m3::Core;
 import lang::java::jdt::m3::Core;
+import lang::java::jdt::m3::AST;
+import IO;
 import Node;
 
 list[node] normaliseLeaves(list[node] ast){
@@ -29,6 +32,34 @@ node normaliseLeaf(node n) {
 	}
 }
 
+public node normalizeNode(node n) {
+	return visit (n) {
+		case \method(x, _, y, z, q) => \method(lang::java::jdt::m3::AST::short(), "methodName", y, z, q)
+		case \method(x, _, y, z) => \method(lang::java::jdt::m3::AST::short(), "methodName", y, z)
+		case \parameter(x, _, z) => \parameter(x, "paramName", z)
+		case \vararg(x, _) => \vararg(x, "varArgName") 
+		case \annotationTypeMember(x, _) => \annotationTypeMember(x, "annonName")
+		case \annotationTypeMember(x, _, y) => \annotationTypeMember(x, "annonName", y)
+		case \typeParameter(_, x) => \typeParameter("typeParaName", x)
+		case \constructor(_, x, y, z) => \constructor("constructorName", x, y, z)
+		case \interface(_, x, y, z) => \interface("interfaceName", x, y, z)
+		case \class(_, x, y, z) => \class("className", x, y, z)
+		case \enumConstant(_, y) => \enumConstant("enumName", y) 
+		case \enumConstant(_, y, z) => \enumConstant("enumName", y, z)
+		case \methodCall(x, _, z) => \methodCall(x, "methodCall", z)
+		case \methodCall(x, y, _, z) => \methodCall(x, y, "methodCall", z) 
+		case Type _ => lang::java::jdt::m3::AST::short()
+		case Modifier _ => lang::java::jdt::m3::AST::\private()
+		case \simpleName(_) => \simpleName("simpleName")
+		case \number(_) => \number("1337")
+		case \variable(x,y) => \variable("variableName",y) 
+		case \variable(x,y,z) => \variable("variableName",y,z) 
+		case \booleanLiteral(_) => \booleanLiteral(true)
+		case \stringLiteral(_) => \stringLiteral("StringLiteralThingy")
+		case \characterLiteral(_) => \characterLiteral("q")
+	}
+}
+
 /*
 * This function remove all key word parameters attributes that refer to the location of a node.
 * This function is usefull when comparing nodes, because otherwise they are seen as different.
@@ -46,10 +77,13 @@ public num calculateSimilarity(node first, node second) {
 	num l = 0;
 	num r = 0;
 	
-	//Remove all keyword parameters attributes that refer to the location of a node.
-	a = removeDeclarationAttributes(first);
-	b = removeDeclarationAttributes(second);
+	println(first);
+	println("==================");
+	println(second);
 	
+ 	firstNodes = getSubNodes(first);
+ 	secondNodes = getSubNodes(second);
+		
 	for(x <- firstNodes) {
  	 	
  	 	// Both contain the subnode
@@ -69,6 +103,18 @@ public num calculateSimilarity(node first, node second) {
 			r += 1;
 		}
 	}	
-	
-	return (2 * s) / (2 * s + l + r);
+
+	return (2 * s) / (2 * (s + l + r));
+}
+
+
+public list[node] getSubNodes(node n) {
+	list[node] nodes = [];
+
+	visit(n) {
+		case node subNode: { 
+			nodes += subNode; 
+		}
+	}
+	return nodes;	
 }
