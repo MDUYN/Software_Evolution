@@ -1,39 +1,30 @@
 module series2::clones::tests::clone_type_one_test
 
-import IO;
 import List;
 import Map;
-import Node;
 import lang::java::m3::AST;
 
 import series2::clones::type_one;
+import series2::clones::detection;
 import utils;
 
 test bool testAddToBucketFunctions() {
-	int massThreshold = 10;
-	map[int, lrel[node, loc]] buckets = (); 	
-	loc fileLocation = |project://clonesTest/src/clonesTest/TypeOne.java|;
+ 	map[node, list[node]] clones = detect(|project://clonesTest/src/clonesTest/TypeOne.java|, 30, addToBucketTypeOne, isCloneFunctionTypeOne);
 	
-	Declaration ast = createAstFromFile(fileLocation, true);
-
-	visit (ast) {
-		case node x: {
-			int currentMass = getMassOfNode(x);
-			
-			loc location = getLocationOfNode(x);
-
-			// The location of the node should not be the project itself
-			if(location == fileLocation) {
-				return;
-			}
-			
-			if (currentMass >= massThreshold) {
-				buckets = addToBucketTypeOne(x, buckets);
-			}
+	classes = getCloneClasses(clones);
+	
+	// There should be 3 clone classes and for each clone class 2 clones
+	bool checkOne = (size(clones) == 1);
+	bool checkTwo = true;
+	
+	// Each clone should atleast contain two clones
+	for(class <- classes) {
+		
+		if(size(clones[class]) != 2) {
+			checkTwo = false;
 		}
 	}
 	
-	// There should be 14 entries in the bucket
-	return (size(buckets) == 14);
+	return (checkOne && checkTwo);
 }
 
