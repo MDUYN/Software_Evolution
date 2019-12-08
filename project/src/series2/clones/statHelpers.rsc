@@ -43,12 +43,13 @@ tuple[int, list[loc]] findBiggestCloneClass(map[node,list[node]] buckets) {
 }
 
 tuple[int,loc] findBiggestClone(map[node,list[node]] buckets) {
-	tuple[int count, loc clone] currentMax = <0,|tmp:///|>;
+	tuple[int count, loc l] currentMax = <0,|tmp:///|>;
 	for(class <- buckets) {
 		for(clone <- buckets[class]) {
-			int s = countNonBlockStatements(clone);
-			if(s > currentMax.count) {
-				currentMax = <s,getSourceLocation(clone)>;
+			loc location = getSourceLocation(clone);
+			int length = location.end.line - location.begin.line;
+			if(length > currentMax.count) {
+				currentMax = <length,location>;
 			}
 		}
 	}
