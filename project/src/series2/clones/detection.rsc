@@ -10,11 +10,11 @@ import lang::java::jdt::m3::AST;
 import series2::AstHelperFunctions;
 import utils;
 
-public map[node, list[node]] detect(loc project, int nodeMassThreshold, map[node, list[node]] (node, map[node, list[node]]) addToBucketFunction, bool (node, node) isCloneFunction){
+public map[node, list[node]] detect(loc project, set[Declaration] asts, int nodeMassThreshold, map[node, list[node]] (node, map[node, list[node]]) addToBucketFunction, bool (node, node) isCloneFunction){
 	map[node, list[node]] buckets = (); 
 	map[node, list[node]] cloneClasses = ();
 	
-	visit(getDeclarations(createM3FromEclipseProject(project))) {
+	visit(asts) {
 		
 		case node x: {		
 			
