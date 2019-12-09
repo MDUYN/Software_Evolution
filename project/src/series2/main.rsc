@@ -24,7 +24,7 @@ void main(){
 	loc project = |project://smallsql0.21_src|;
 	set[Declaration] asts = createAstsFromEclipseProject(project, true);
 	
-	Buckets buckets = detect(project, asts, 30, addToBucketTypeOne, isCloneFunctionTypeOne);
+	Buckets buckets = detect(project, asts, 30, addToBucketTypeOne, isCloneFunctionTypeOne, removeSubtreeNodesFunctionTypeOne);
 	value v = createData(project,asts,buckets);
 	serveValue(|http://localhost:8080|,v);
 }
@@ -50,6 +50,8 @@ value getLocationData(loc l) {
 	return (
 		"path": l.path,
 		"length": (l.end.line - l.begin.line),
+		"begin": l.begin,
+		"end" : l.end,
 		"content": getContent(l)
 	);
 }
