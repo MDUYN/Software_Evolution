@@ -1,5 +1,6 @@
 module series2::clones::detection
 
+import IO;
 import List;
 import Map;
 import lang::java::m3::AST;
@@ -32,7 +33,7 @@ public map[node, list[node]] detect(loc project, int nodeMassThreshold, map[node
 			}
 		}	
 	}
-			
+	
  	for(key <- buckets) {
 		
 		list[node] nodes = buckets[key];
