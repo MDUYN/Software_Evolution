@@ -50,6 +50,8 @@ value getLocationData(loc l) {
 	return (
 		"path": l.path,
 		"length": (l.end.line - l.begin.line),
+		"begin": l.begin,
+		"end" : l.end,
 		"content": getContent(l)
 	);
 }

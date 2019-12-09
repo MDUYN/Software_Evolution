@@ -7,7 +7,7 @@ import { VerticalBarSeries, XYPlot, VerticalGridLines, HorizontalGridLines, XAxi
 
 const Density = (props) => {
     const myData = props.data.map((item) => {
-        return {x: item.name, y: item.count}
+        return { x: item.name, y: item.count }
     });
 
     const [show, setShow] = useState(false);
@@ -18,16 +18,21 @@ const Density = (props) => {
         <>
             <Card>
                 <Card.Header className="cardHeader">
-                    <h1>Things!</h1>
+                    <h1>Clones found per package</h1>
                 </Card.Header>
                 <Card.Body>
-                    <p>duplication found in the project.</p>
-                    <Button variant="primary" onClick={handleShow}>
-                        Show graph
-                </Button>
+                    <XYPlot margin={{ bottom: 70 }} xType="ordinal" width={300} height={300}>
+                        <VerticalGridLines />
+                        <HorizontalGridLines />
+                        <XAxis />
+                        <YAxis />
+                        <VerticalBarSeries
+                            data={myData}
+                        />
+                    </XYPlot>
                 </Card.Body>
             </Card>
-            <Modal 
+            <Modal
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
@@ -36,15 +41,7 @@ const Density = (props) => {
                     <Modal.Title>Distribution graph</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <XYPlot margin={{ bottom: 70 }} xType="ordinal" width={300} height={300}>
-                        <VerticalGridLines />
-                        <HorizontalGridLines />
-                        <XAxis/>
-                        <YAxis />
-                        <VerticalBarSeries
-                            data={myData}
-                        />
-    </XYPlot>
+
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>

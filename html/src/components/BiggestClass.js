@@ -14,7 +14,7 @@ const BiggestClass = (props) => {
     const handleShowSummary = () => setShowSummary(true);
     var i =0;
     const items = props.data.map((item) => 
-        <li key={i++}>{item.path}</li>);
+        <li key={i++}>{item.path} (from line: {item.begin[0]} -> to line: {item.end[0]})</li>);
 
     return (
         <>
