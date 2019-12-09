@@ -11,6 +11,7 @@ import series2::node_utils;
 import utils;
 
 public map[node, list[node]] detect(loc project, int nodeMassThreshold, map[node, list[node]] (node, map[node, list[node]]) addToBucketFunction, bool (node, node) isCloneFunction, map[node, list[node]] (map[node, list[node]] clonesRegistry, node n, int massThreshold) removeSubtreeNodesFunction){
+ 
 	map[node, list[node]] buckets = (); 
 	map[node, list[node]] clonesRegistry = ();
 	
