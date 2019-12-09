@@ -179,26 +179,3 @@ void printMaintainability(str rating) {
 	println("MAINTAINABILITY  ||-------|-------|-------|-------||<padCentre(rating,5)>||");
 }
 
-public loc getLocationOfNode(node n) {
-	
-	if (Declaration d := n) {
-		return d.src;
-	} else if (Expression e := n) {
-		return e.src;
-	} else if (Statement s := n) {
-		return s.src;
-	}
-	return |unknown:///|;
-}
-
-public int getMassOfNode(node x) {
-	int mass = 0;
-	
-	visit(x) {
-		case node subNode: { 
-			mass += 1; 
-		}
-	}
-	return mass;
-}
-

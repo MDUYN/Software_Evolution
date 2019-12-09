@@ -1,15 +1,15 @@
-module series2::clones::tests::clone_type_one_test
+module series2::clones::tests::type_one_test
 
 import List;
 import Map;
 import lang::java::m3::AST;
 
+import series2::node_utils;
 import series2::clones::type_one;
 import series2::clones::detection;
-import utils;
 
-test bool testAddToBucketFunctions() {
- 	map[node, list[node]] clones = detect(|project://clonesTest/src/clonesTest/TypeOne.java|, 30, addToBucketTypeOne, isCloneFunctionTypeOne);
+test bool testDetection() {
+ 	map[node, list[node]] clones = detect(|project://clonesTest|, 30, addToBucketTypeOne, isCloneFunctionTypeOne, removeSubtreeNodesFunctionTypeOne);
 	
 	classes = getCloneClasses(clones);
 	

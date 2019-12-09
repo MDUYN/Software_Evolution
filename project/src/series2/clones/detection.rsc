@@ -7,12 +7,12 @@ import lang::java::m3::Core;
 import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
 
-import series2::AstHelperFunctions;
+import series2::node_utils;
 import utils;
 
-public map[node, list[node]] detect(loc project, int nodeMassThreshold, map[node, list[node]] (node, map[node, list[node]]) addToBucketFunction, bool (node, node) isCloneFunction){
+public map[node, list[node]] detect(loc project, int nodeMassThreshold, map[node, list[node]] (node, map[node, list[node]]) addToBucketFunction, bool (node, node) isCloneFunction, map[node, list[node]] (map[node, list[node]] clonesRegistry, node n, int massThreshold) removeSubtreeNodesFunction){
 	map[node, list[node]] buckets = (); 
-	map[node, list[node]] cloneClasses = ();
+	map[node, list[node]] clonesRegistry = ();
 	
 	visit(getDeclarations(createM3FromEclipseProject(project))) {
 		
@@ -43,24 +43,46 @@ public map[node, list[node]] detect(loc project, int nodeMassThreshold, map[node
 		 	lrel[node first, node second] nodePairsList = [<a, b> | a <- nodes, b <- nodes, getLocationOfNode(a) != getLocationOfNode(b)];
 			
 			// Remove all symmetric pairs, because otherwise we will duplicate clone pairs
-			nodePairsList = removeSymmetricPairs(nodePairsList);
+			nodePairsList = removeSymmetricPairs(nodePairsList);			
 									
 			for(pair <- nodePairsList) {
+				
 				if(isCloneFunction(pair.first, pair.second)) {
 					
-					if(key in cloneClasses) {
-						cloneClasses[key] += [pair.first, pair.second];
-					} else {
-						cloneClasses[key] = [pair.first, pair.second];
+					// Make new entry in the clones registry if needed
+					if(!(key in clonesRegistry)) {
+						clonesRegistry[key] = [];
 					}
 					
-					cloneClasses = removeSubtreeClones(cloneClasses, pair.first, nodeMassThreshold);
-					cloneClasses = removeSubtreeClones(cloneClasses, pair.second, nodeMassThreshold);
+					// Add the clones
+					clonesRegistry[key] = addToClones(pair.first, clonesRegistry[key]);
+					clonesRegistry[key] = addToClones(pair.second, clonesRegistry[key]);
 				}
 			}	
 		}
 	}
-	return cloneClasses;
+	
+	//Sort all the keys for the removal of subclones, otherwise the sorting doesn't work
+	//Larger nodes need to be on front
+	cloneClasses = getCloneClasses(clonesRegistry);
+	
+	sortedCloneClasses = sort(cloneClasses, bool(node a, node b){ 
+			return getMassOfNode(b) > getMassOfNode(a); 
+		}
+	);
+	
+	
+	for(class <- sortedCloneClasses) {
+		
+		// Get all the nodes in the entry
+		nodes = clonesRegistry[class];
+	
+		for(x <- nodes) {
+			clonesRegistry = removeSubtreeNodesFunction(clonesRegistry, x, nodeMassThreshold);
+		}
+	}
+	
+	return clonesRegistry;
 }
 
 
@@ -81,49 +103,23 @@ private lrel[node first, node second] removeSymmetricPairs(lrel[node first, node
 	return filteredPairs;
 }
 
-public list[node] getCloneClasses(map[node, list[node]] clones) {
+public list[node] addToClones(node n, list[node] clones) {
+	
+	if(n in clones) {
+		return clones;	
+	}
+	else {
+		clones += n;
+		return clones; 
+	}
+}
+
+public list[node] getCloneClasses(map[node, list[node]] clonesRegistry) {
 	list[node] classes = [];
 	
-	for(class <- clones) {
+	for(class <- clonesRegistry) {
 		classes += class;
 	}
 	
 	return classes;
-}
-
-// Function to remove subnodes in de clones, because you only want the biggest clones
-private map[node, list[node]] removeSubtreeClones(map[node, list[node]] clones, node n, int massThreshold){
-	
-	map[node, list[node]] newCloneClasses = ();
-	
-	visit(n) {
-		case node subNode : {
-			
-			// Skip "child nodes" which are the same as the parent and skip nodes below mass threshold
-			// second statement is to disable optimisation for testing purposes.
-			
-			if(getMassOfNode(subNode) >= massThreshold && n != subNode) {
-				
-				for(class <- clones) {
-					
-					nodes = clones[class];
-					
-					if(subNode in nodes) {
-						nodes = delete(nodes, indexOf(nodes, subNode));
-					}						
-					clones[class] = nodes;
-				}
-			}
-		}
-	}
-	
-	// Removing empty keys	
-	for(class <- clones) {
-		
-		if(size(clones[class]) >= 2) {
-			newCloneClasses[class] = clones[class];
-		}
-	}
-	
-	return newCloneClasses;
 }
