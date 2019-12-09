@@ -1,23 +1,20 @@
 module series2::clones::detection
 
 import List;
-import IO;
 import Map;
 import lang::java::m3::AST;
 import lang::java::m3::Core;
 import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
-import Node;
 
 import series2::AstHelperFunctions;
 import utils;
 
-public map[node, list[tuple[node, loc]]] detect(loc project, int nodeMassThreshold, map[node, lrel[node, loc]] (node, map[node, lrel[node, loc]]) addToBucketFunction, bool (tuple[node,loc], tuple[node,loc]) isCloneFunction){
-	map[node, lrel[node, loc]] buckets = (); 
-	lrel[tuple[node,loc],tuple[node,loc]] clones = [];
-	map[node, list[tuple[node, loc]]] cloneClasses = ();
+public map[node, list[node]] detect(loc project, set[Declaration] asts, int nodeMassThreshold, map[node, list[node]] (node, map[node, list[node]]) addToBucketFunction, bool (node, node) isCloneFunction){
+	map[node, list[node]] buckets = (); 
+	map[node, list[node]] cloneClasses = ();
 	
-	visit(getDeclarations(createM3FromEclipseProject(project))) {
+	visit(asts) {
 		
 		case node x: {		
 			
@@ -34,28 +31,31 @@ public map[node, list[tuple[node, loc]]] detect(loc project, int nodeMassThresho
 			}
 		}	
 	}
-	
-	for(key <- buckets) {
+			
+ 	for(key <- buckets) {
 		
-		lrel[node x, loc location] nodes = buckets[key];
+		list[node] nodes = buckets[key];
 		
 		// Atleast two nodes in a bucket
 		if(size(nodes) >= 2) {
-		
+			
 			// Create a list of nodes by pairing them 
-		 	lrel[tuple[node x, loc location] first, tuple[node x, loc location] second] nodePairsList = [<a, b> | a <- nodes, b <- nodes, a.location != b.location];
+		 	lrel[node first, node second] nodePairsList = [<a, b> | a <- nodes, b <- nodes, getLocationOfNode(a) != getLocationOfNode(b)];
 			
 			// Remove all symmetric pairs, because otherwise we will duplicate clone pairs
 			nodePairsList = removeSymmetricPairs(nodePairsList);
-						
+									
 			for(pair <- nodePairsList) {
 				if(isCloneFunction(pair.first, pair.second)) {
-				
+					
 					if(key in cloneClasses) {
 						cloneClasses[key] += [pair.first, pair.second];
 					} else {
 						cloneClasses[key] = [pair.first, pair.second];
 					}
+					
+					cloneClasses = removeSubtreeClones(cloneClasses, pair.first, nodeMassThreshold);
+					cloneClasses = removeSubtreeClones(cloneClasses, pair.second, nodeMassThreshold);
 				}
 			}	
 		}
@@ -67,11 +67,11 @@ public map[node, list[tuple[node, loc]]] detect(loc project, int nodeMassThresho
 /*
 * Function that remove symmetric pairs of nodes e.g. [(a,b), (b,a)] = [(a,b)]
 */
-private lrel[tuple[node,loc], tuple[node,loc]] removeSymmetricPairs(lrel[tuple[node, loc] first, tuple[node ,loc] second] nodes) {
-	lrel[tuple[node,loc],tuple[node,loc]] filteredPairs = [];
+private lrel[node first, node second] removeSymmetricPairs(lrel[node first, node second] nodes) {
+	lrel[node, node] filteredPairs = [];
 	
 	for (pair <- nodes) {
-		tuple[tuple[node,loc],tuple[node,loc]] reverse = <<pair[1][0],pair[1][1]>,<pair[0][0],pair[0][1]>>;
+		tuple[node, node] reverse = <pair.second, pair.first>;
 		
 		if (reverse notin filteredPairs) {		
 			filteredPairs += pair;
@@ -81,12 +81,49 @@ private lrel[tuple[node,loc], tuple[node,loc]] removeSymmetricPairs(lrel[tuple[n
 	return filteredPairs;
 }
 
-
-public void printCloneClasses(map[node, list[tuple[node, loc]]] clones) {
+public list[node] getCloneClasses(map[node, list[node]] clones) {
+	list[node] classes = [];
 	
-	for(class <- clones) {	
-		println("====================================");
-		println(class);
-		println("====================================");
+	for(class <- clones) {
+		classes += class;
 	}
+	
+	return classes;
+}
+
+// Function to remove subnodes in de clones, because you only want the biggest clones
+private map[node, list[node]] removeSubtreeClones(map[node, list[node]] clones, node n, int massThreshold){
+	
+	map[node, list[node]] newCloneClasses = ();
+	
+	visit(n) {
+		case node subNode : {
+			
+			// Skip "child nodes" which are the same as the parent and skip nodes below mass threshold
+			// second statement is to disable optimisation for testing purposes.
+			
+			if(getMassOfNode(subNode) >= massThreshold && n != subNode) {
+				
+				for(class <- clones) {
+					
+					nodes = clones[class];
+					
+					if(subNode in nodes) {
+						nodes = delete(nodes, indexOf(nodes, subNode));
+					}						
+					clones[class] = nodes;
+				}
+			}
+		}
+	}
+	
+	// Removing empty keys	
+	for(class <- clones) {
+		
+		if(size(clones[class]) >= 2) {
+			newCloneClasses[class] = clones[class];
+		}
+	}
+	
+	return newCloneClasses;
 }

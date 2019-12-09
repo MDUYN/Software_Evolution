@@ -1,4 +1,4 @@
-package clonesTest;
+package series2.clones.tests.java;
 
 public class TypeOne {
 	

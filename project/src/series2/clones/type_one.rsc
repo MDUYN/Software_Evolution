@@ -1,28 +1,22 @@
 module series2::clones::type_one
 
-import List;
+import series2::node_utils;
 import IO;
-import Map;
-
-import series2::AstHelperFunctions;
-import utils;
 
 /**
 * That will add a Node to the bucket
 */
-public map[node, lrel[node, loc]] addToBucketTypeOne(node nodeToAdd, map[node, lrel[node, loc]] buckets) {	
-	
-	loc location = getLocationOfNode(nodeToAdd);
-	
+public map[node, list[node]] addToBucketTypeOne(node nodeToAdd, map[node,list[node]] buckets) {	
+		
 	// Remove attributes refering to location of the source
 	node x = removeDeclarationAttributes(nodeToAdd);
 		
 	// Check if the key is already in the bucket
 	if(x in buckets) {
-		buckets[x] += <x, location>;
+		buckets[x] += nodeToAdd;
 	} else {		
 		// Create a new entry in the bucket
-		buckets[x] = [<x, location>];
+		buckets[x] = [nodeToAdd];
 	}
 	return buckets;
 }
@@ -30,9 +24,13 @@ public map[node, lrel[node, loc]] addToBucketTypeOne(node nodeToAdd, map[node, l
 /*
 * Function that checks if two given nodes are type one clones
 */
-public bool isCloneFunctionTypeOne(tuple[node x, loc location] first, tuple[node x, loc location] second) {
+public bool isCloneFunctionTypeOne(node first, node second) {
+ 
+	// Similarity should be 1.0 in order to let it be a type one clone
+	firstNormalized = removeDeclarationAttributes(first);
+	secondNormalized = removeDeclarationAttributes(second);
 	
- 	if(calculateSimilarity(first.x, second.x) == 1.0) {
+ 	if(calculateSimilarity(firstNormalized, secondNormalized) == 1.0) {
  		return true;
  	} 
  	

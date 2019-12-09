@@ -1,10 +1,9 @@
-module series2::AstHelperFunctions
+module series2::node_utils
 
 import lang::java::m3::AST;
 import lang::java::m3::Core;
 import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
-import IO;
 import Node;
 
 list[node] normaliseLeaves(list[node] ast){
@@ -69,17 +68,13 @@ public node removeDeclarationAttributes(node n) {
 }
 
 public num calculateSimilarity(node first, node second) {
+
 	//Similarity = 2 x S / (2 x S + L + R)
-		
 	list[node] firstNodes = [];
 	list[node] secondNodes = [];
 	num s = 0;
 	num l = 0;
 	num r = 0;
-	
-	println(first);
-	println("==================");
-	println(second);
 	
  	firstNodes = getSubNodes(first);
  	secondNodes = getSubNodes(second);
@@ -118,3 +113,20 @@ public list[node] getSubNodes(node n) {
 	}
 	return nodes;	
 }
+
+public int getMassOfNode(node x) {
+	return size(getSubNodes(x));
+}
+
+public loc getLocationOfNode(node n) {
+	
+	if (Declaration d := n) {
+		return d.src;
+	} else if (Expression e := n) {
+		return e.src;
+	} else if (Statement s := n) {
+		return s.src;
+	}
+	return |unknown:///|;
+}
+
