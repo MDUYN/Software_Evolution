@@ -4,15 +4,18 @@ import IO;
 import List;
 import Map;
 import lang::java::m3::AST;
+import lang::java::jdt::m3::Core;
+import lang::java::jdt::m3::AST;
 import series2::node_utils;
 import series2::clones::type_three;
 import series2::clones::detection;
  
 test bool testDetection() {
- 	map[node, list[node]] clones = detect(|project://clonesTest|, 30, addToBucketTypeThree, isCloneFunctionTypeThree, removeSubtreeNodesFunctionTypeThree);
-	
-	println(size(clones));
-	classes = getCloneClasses(clones);
+	set[Declaration] asts = createAstsFromEclipseProject(|project://clonesTest|, true);
+
+ 	map[node, list[node]] clones = detect(|project://clonesTest|, asts, 30, addToBucketTypeThree, isCloneFunctionTypeThree, removeSubtreeNodesFunctionTypeThree);
+
+	list[node] classes = getCloneClasses(clones);
 	println(size(classes));
 		
 	// There should be 2 clone classes and for each clone class 2 clones

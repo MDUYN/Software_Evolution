@@ -1,7 +1,6 @@
 module series2::node_utils
 
 import List;
-
 import lang::java::m3::AST;
 import lang::java::m3::Core;
 import lang::java::jdt::m3::Core;
@@ -81,6 +80,10 @@ node normaliseLeaf(node n) {
 //	}
 //}
 
+
+/* 
+* Funtion that normalizes node, make sure you remove all the declarations before passing it to this function
+*/ 
 public node normalizeNode(node n) {
 
 	return visit(n) {
@@ -135,25 +138,19 @@ public num calculateSimilarity(node first, node second) {
  	 	// Both contain the subnode
 		if(x in secondNodes) {
 			s += 1;
-		} else {
-		
-			// Only the first node has the subnode
-			l += 1;
-		}
+		} 
 	}
 	
-	for(x <- secondNodes) {
-		
-		// Only the second node has the subnode
-		if(x notin secondNodes) {
-			r += 1;
-		}
-	}	
+	l = size(firstNodes) - s;
+	r = size(secondNodes) - s;
 
 	return (2 * s) / (2 * (s + l + r));
 }
 
 
+/*
+* Get subnodes returns all the sub nodes from a given root node
+*/
 public list[node] getSubNodes(node n) {
 	list[node] nodes = [];
 

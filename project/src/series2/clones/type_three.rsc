@@ -14,7 +14,7 @@ public map[node, list[node]] addToBucketTypeThree(node nodeToAdd, map[node, list
 	
 	// Normalize node
 	x = normalizeNode(x);
-	
+
 	println(getLocationOfNode(nodeToAdd));
 	println(x);
 	
@@ -23,15 +23,13 @@ public map[node, list[node]] addToBucketTypeThree(node nodeToAdd, map[node, list
 	for(class <- buckets) {
 		
 		// Check if the node matches with the class
-		if(calculateSimilarity(class, x) >= 0.8) {
-			
+		if(calculateSimilarity(class, x) >= 0.8) {		
 			matches += class;
 		}
 	}
 	
 	println("matches");
 	println(size(matches));
-	
 	
 	if(size(matches) == 0) {
 		buckets[x] = [nodeToAdd];

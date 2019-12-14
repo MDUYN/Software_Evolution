@@ -6,11 +6,17 @@ import lang::java::m3::AST;
 import series2::node_utils;
 import series2::clones::type_two;
 import series2::clones::detection;
+import lang::java::m3::AST;
+import lang::java::jdt::m3::Core;
+import lang::java::jdt::m3::AST;
+
  
 test bool testDetection() {
- 	map[node, list[node]] clones = detect(|project://clonesTest|, 30, addToBucketTypeTwo, isCloneFunctionTypeTwo, removeSubtreeNodesFunctionTypeTwo);
+	set[Declaration] asts = createAstsFromEclipseProject(|project://clonesTest|, true);
+
+ 	map[node, list[node]] clones = detect(|project://clonesTest|, asts, 30, addToBucketTypeTwo, isCloneFunctionTypeTwo, removeSubtreeNodesFunctionTypeTwo);
 	
-	classes = getCloneClasses(clones);
+	list[node] classes = getCloneClasses(clones);
 		
 	// There should be 2 clone classes and for each clone class 2 clones
 	bool checkOne = (size(clones) == 2);
