@@ -3,8 +3,10 @@ module series2::main
 import IO;
 import String;
 import List;
+import Set;
 import Node;
 import Location;
+import Map;
 
 import lang::java::m3::AST;
 import lang::java::m3::Core;
@@ -14,6 +16,7 @@ import lang::java::jdt::m3::AST;
 import series2::clones::statHelpers;
 import series2::clones::detection;
 import series2::clones::type_one;
+import series2::clones::type_two;
 import series2::Server;
 
 import util::Math;
@@ -23,10 +26,64 @@ alias Buckets = map[node,list[node]];
 void main(){
 	loc project = |project://smallsql0.21_src|;
 	set[Declaration] asts = createAstsFromEclipseProject(project, true);
+	Buckets buckets1 = detect(project, asts, 30, addToBucketTypeOne, isCloneFunctionTypeOne, removeSubtreeNodesFunctionTypeOne);
+	Buckets buckets2 = detect(project, asts, 30, addToBucketTypeTwo, isCloneFunctionTypeTwo, removeSubtreeNodesFunctionTypeTwo);
 	
-	Buckets buckets = detect(project, asts, 30, addToBucketTypeOne, isCloneFunctionTypeOne, removeSubtreeNodesFunctionTypeOne);
-	value v = createData(project,asts,buckets);
-	serveValue(|http://localhost:8080|,v);
+	map[str,map[str,int]] deps1 = getDependencies(buckets1);
+	map[str,map[str,int]] deps2 = getDependencies(buckets2);
+	
+	value v1 = createData(project,asts,buckets1);
+	value v2 = createData(project, asts, buckets2);
+	list[value] d1 =  ([] | it + formatDependencies(k, deps1[k]) | k <- deps1);
+	list[value] d2 =  ([] | it + formatDependencies(k, deps2[k]) | k <- deps2);
+	
+	serveValues(|http://localhost:8080|, ("/type1": v1, "/type2": v2, "/type1/dep": d1, "/type2/dep": d2));
+}
+
+
+map[str, map[str, int]] getDependencies(Buckets buckets) {
+	map[str, map[str, int]] deps = ();
+	for(k <- buckets){
+		list[node] values = buckets[k];
+		for(v <- values) {
+			loc source = getSourceLocation(v);
+			str path = source.path;
+			if(path notin deps) {
+				deps[path] = ();
+			}
+			list[loc] rest = ([] | it + getSourceLocation(l) | l <- values) - source;
+			for(r <- rest) {
+				str ref = r.path;
+				if(ref in deps) {
+					if(path notin deps[ref]){
+						deps[path] += (ref: 1);
+					}else {
+						deps[ref][path] += 1;
+					}
+				}else if(ref in deps[path]){
+					deps[path][ref] += 1;
+				}else {
+					deps[path] += (ref: 1);
+				}
+			}
+		}
+	}
+	return deps;
+}
+
+list[value] formatDependencies(str from, map[str, int] valueData) { 
+	list[value] retval = [];
+	for(to <- valueData){
+		if(isEmpty(to)){
+			continue;
+		}
+		retval += (
+			"from": from,
+			"to": to,
+			"weight": valueData[to]
+		);
+	}
+	return retval;
 }
 
 value createData(loc project, set[Declaration] asts, Buckets buckets) {
@@ -42,7 +99,7 @@ value createData(loc project, set[Declaration] asts, Buckets buckets) {
 		"numberOfClones": numberOfClones,
 		"biggestClone": getLocationData(biggestCloneInLines.location),
 		"biggestClass": ([] | it + getLocationData(l) | l <- biggestClass.locations),
-		"packageDensity": convertToJson(getCloneDensityByPackage(buckets))
+		"packageDensity": convertToJson(getCloneDensityByPackage(buckets), "name", "count")
 	);
 }
 
@@ -54,6 +111,18 @@ value getLocationData(loc l) {
 		"end" : l.end,
 		"content": getContent(l)
 	);
+}
+
+list[value] getRawData(Buckets buckets) {
+	list[value] retval = [];
+	for(n <- buckets) {
+		list[node] children = buckets[n];
+		retval += (
+			"bucket": n,
+			"children": children
+		);
+	}
+	return retval;
 }
 
 map[str name, int count] getCloneDensityByPackage(Buckets buckets) {
@@ -72,11 +141,19 @@ map[str name, int count] getCloneDensityByPackage(Buckets buckets) {
 	
 	return retval;
 }
-
-list[value] convertToJson(map[str name, int count] m) {
+list[value] convertToJson(map[&T, &T] m, str keyId, str valueId) {
 	list[value] retval = [];
-	for(key <- m) {
-		retval += ("name": key, "count": m[key]);
+	for(key <- m){
+		retval += (keyId: key, valueId: m[key]);
+	}
+	return retval;
+}
+
+list[value] convertDependenciesToJson(map[loc, list[loc]] m) {
+	list[value] retval = [];
+	for(key <- m){
+		list[str] vals = ([] | it + l.path | l <- m[key]); 
+		retval += ("to": key.path, "from": vals);
 	}
 	return retval;
 }
@@ -90,4 +167,8 @@ str getContainingPackage(str input){
 		}
 	}
 	return ("" | it + "<e>/" | e <- output);
+}
+
+set[loc] getFileLocations(loc project) {
+	return files(createM3FromEclipseProject(project));
 }
