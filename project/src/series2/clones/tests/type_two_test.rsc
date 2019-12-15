@@ -18,7 +18,7 @@ test bool testDetection() {
 	
 	list[node] classes = getCloneClasses(clones);
 		
-	// There should be 2 clone classes and for each clone class 2 clones
+	// There should be 3 clone classes and for each clone class 2 clones
 	bool checkOne = (size(clones) == 2);
 	bool checkTwo = true;
 	

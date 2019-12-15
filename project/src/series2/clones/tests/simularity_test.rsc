@@ -33,7 +33,6 @@ public test bool testSimilarityTwo() {
 
 public bool testSimilarityThree() {
 	Declaration declaration = createAstFromFile(|project://clonesTest/src/clonesTest/TypeThree.java|, true);
-	list[node] nodes = [];
 	map[node, list[node]] buckets = (); 
 	map[node, list[node]] clonesRegistry = ();
 	
@@ -41,14 +40,12 @@ public bool testSimilarityThree() {
 		
 		case node x: {		
 			
-			if(getMassOfNode(x) > 30) {
-				nodes += x;	
-				
+			if(getMassOfNode(x) > 30) {				
 				buckets = addToBucketTypeThree(x, buckets);
 			}
 		}	
 	}
-	
+		
 	for(key <- buckets) {
 		
 		list[node] nodes = buckets[key];
@@ -129,25 +126,31 @@ public map[node, list[node]] addToBucketTypeThree(node nodeToAdd, map[node, list
 	for(class <- buckets) {
 		
 		// Check if the node matches with the class
-		if(calculateSimilarity(class, x) >= 0.7) {		
+		if(calculateSimilarity(class, x) >= 0.8) {		
 			matches += class;
 		}
 	}
 	
 	// Make new entry
 	if(size(matches) == 0) {
+		println("placed in new bucket");
+		println(getLocationOfNode(nodeToAdd));
 		buckets[x] = [nodeToAdd];
 	} else {
-		
+		println("placed");
+		println(getLocationOfNode(nodeToAdd));
 		// Add the clone to the biggest entry
 		sortedCloneClasses = sort(matches, bool(node a, node b){ 
 			return getMassOfNode(b) < getMassOfNode(a); 
 		});
+		
+		for(class <- sortedCloneClasses) {
+			println(class);
+		}
 		 
 		buckets[sortedCloneClasses[0]] += nodeToAdd;
 	}
 	
-	// Reorganize buckets 
 	return buckets;
 }
 
@@ -186,12 +189,11 @@ public map[node, list[node]] removeSubtreeNodesFunctionTypeThree(map[node, list[
 	
 				// Normalize node
 				x = normalizeNode(x);
-	 			
 	
 				for(class <- clonesRegistry) {
 					
 					// Check if the node matches with the class
-					if(calculateSimilarity(class, x) >= 0.7) {		
+					if(calculateSimilarity(class, x) >= 0.8) {		
 						matches += class;
 					}
 				}
@@ -224,7 +226,7 @@ public bool isCloneFunctionTypeThree(node first, node second) {
 		firstNormalized = normalizeNode(firstNormalized);
 		secondNormalized = normalizeNode(secondNormalized);
 		
-	 	if(calculateSimilarity(firstNormalized, secondNormalized) >= 0.7) {
+	 	if(calculateSimilarity(firstNormalized, secondNormalized) >= 0.8) {
 	 		return true;
 	 	} 
 	 }
@@ -268,8 +270,49 @@ private map[node, list[node]] removeEmptyClasses(map[node, list[node]] clonesReg
 	return newClonesRegistry; 
 } 
 
-private map[node, list[node]] reorganizeBuckets(map[node, list[node]] buckets) {
-
-
+private map[node, list[node]] copyBuckets(map[node, list[node]] buckets) {
+	map[node, list[node]] newBuckets = (); 
 	
+	for(class <- buckets) {
+		newBuckets[class] = buckets[class];
+	}
+	return newBuckets;
+}
+
+private map[node, list[node]] reorganizeBuckets(map[node, list[node]] buckets) {
+	map[node, list[node]] newBuckets = copyBuckets(buckets); 
+	
+	classes = getCloneClasses(buckets);
+	
+	for(class <- classes) {
+		nodes = buckets[class];
+		
+		for(x <- nodes) {
+			list[node] matches = [];
+			normalized = removeDeclarationAttributes(x);
+			normalized = normalizeNode(normalized);
+			
+			for(class <- classes) {
+				
+				if(calculateSimilarity(n, normalized) >= 0.8) {
+					matches += class;
+				} 
+			}
+			
+			for(match <- matches) {
+				newBuckets[match] += x;
+			}
+		}
+	}	
+	return newBuckets;
+}
+
+public list[node] getCloneClasses(map[node, list[node]] clonesRegistry) {
+	list[node] classes = [];
+	
+	for(class <- clonesRegistry) {
+		classes += class;
+	}
+	
+	return classes;
 }

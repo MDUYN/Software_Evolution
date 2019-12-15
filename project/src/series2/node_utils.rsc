@@ -83,6 +83,7 @@ node normaliseLeaf(node n) {
 
 /* 
 * Funtion that normalizes node, make sure you remove all the declarations before passing it to this function
+* This function is copied from the project https://github.com/Nicasso/rascal-clone-detector
 */ 
 public node normalizeNode(node n) {
 
@@ -166,6 +167,9 @@ public int getMassOfNode(node x) {
 	return size(getSubNodes(x));
 }
 
+/*
+* This function is copied from the project https://github.com/Nicasso/rascal-clone-detector
+*/
 public loc getLocationOfNode(node n) {
 	
 	if (Declaration d := n) {

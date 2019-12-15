@@ -45,7 +45,6 @@ public bool isCloneFunctionTypeTwo(node first, node second) {
 * Function to remove subtree nodes for type two clones
 */ 
 public map[node, list[node]] removeSubtreeNodesFunctionTypeTwo(map[node, list[node]] clonesRegistry, node n, int massThreshold) {
-	map[node, list[node]] newClonesRegistry = ();
 	
 	visit(n) {
 		case node subNode : {
@@ -73,13 +72,5 @@ public map[node, list[node]] removeSubtreeNodesFunctionTypeTwo(map[node, list[no
 		}
 	}
 	
-	// Removing empty keys	
-	for(class <- clonesRegistry) {
-		
-		if(size(clonesRegistry[class]) >= 2) {
-			newClonesRegistry[class] = clonesRegistry[class];
-		}
-	}
-	
-	return newClonesRegistry;
+ 	return clonesRegistry;
 }

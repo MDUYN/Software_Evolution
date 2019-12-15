@@ -1,6 +1,5 @@
 module series2::clones::detection
 
-import IO;
 import List;
 import Map;
 import lang::java::m3::AST;
@@ -84,6 +83,9 @@ public map[node, list[node]] detect(loc project, set[Declaration] asts, int node
 		}
 	}
 	
+	// Removing empty keys
+	clonesRegistry = removeEmptyClasses(clonesRegistry);
+	
 	return clonesRegistry;
 }
 
@@ -125,3 +127,18 @@ public list[node] getCloneClasses(map[node, list[node]] clonesRegistry) {
 	
 	return classes;
 }
+
+//Function to remove empty classes in a clone register
+private map[node, list[node]] removeEmptyClasses(map[node, list[node]] clonesRegistry) {
+	map[node, list[node]] newClonesRegistry = ();
+	
+	for(class <- clonesRegistry) {
+		
+		// Check if less then two nodes are in class
+		if(size(clonesRegistry[class]) >= 2) {
+			newClonesRegistry[class] = clonesRegistry[class];
+		} 
+	}
+	
+	return newClonesRegistry; 
+} 
